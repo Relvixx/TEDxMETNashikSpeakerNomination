@@ -29,10 +29,49 @@ document.addEventListener('DOMContentLoaded', () => {
         speaker_name: formData.speaker_name,
         core_idea:    formData.core_idea,
         why_speaker:  formData.why_speaker,
-        file_names:   formData.file_names || null
+        file_names:   formData.file_names || null,
+        file_urls:    formData.file_urls || null
       }]);
 
     return { data, error };
+  }
+
+  /**
+   * Upload files to Supabase Storage bucket 'nominations'.
+   * Each submission gets a unique folder: submissions/<userName>_<timestamp>_<random>/
+   * Returns an array of storage paths on success, or an empty array on failure.
+   */
+  async function uploadFilesToSupabase(files, formData) {
+    // Generate a unique folder name for this submission
+    const safeUserName = `${formData.first_name}_${formData.last_name}`.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const randomId  = Math.random().toString(36).substring(2, 8);
+    const folder    = `submissions/${safeUserName}_${timestamp}_${randomId}`;
+
+    const uploadedPaths = [];
+
+    for (const file of files) {
+      // Sanitize filename: replace spaces with underscores
+      const safeName = file.name.replace(/\s+/g, '_');
+      const filePath = `${folder}/${safeName}`;
+
+      const { data, error } = await supabase.storage
+        .from('nominations')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) {
+        console.error(`❌ Upload failed for ${file.name}:`, error);
+        // Continue uploading remaining files even if one fails
+      } else {
+        console.log(`✅ Uploaded: ${data.path}`);
+        uploadedPaths.push(data.path);
+      }
+    }
+
+    return uploadedPaths;
   }
 
   // ——————————————————————————————
@@ -176,7 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.textContent = 'Submitting';
 
       // Shared form data
-      const fileNamesStr = typeof selectedFiles !== 'undefined' && selectedFiles.length > 0
+      const hasFiles = typeof selectedFiles !== 'undefined' && selectedFiles.length > 0;
+      const fileNamesStr = hasFiles
         ? selectedFiles.map(f => f.name).join(', ')
         : null;
 
@@ -188,11 +228,26 @@ document.addEventListener('DOMContentLoaded', () => {
         speaker_name: speakerName.value.trim(),
         core_idea:    coreIdea.value.trim(),
         why_speaker:  whySpeaker.value.trim(),
-        file_names:   fileNamesStr
+        file_names:   fileNamesStr,
+        file_urls:    null
       };
 
       try {
-        // ——— Step 1: Save to Supabase (primary data store) ———
+        // ——— Step 1: Upload files to Supabase Storage (if any) ———
+        if (hasFiles) {
+          submitBtn.textContent = 'Uploading files…';
+          const uploadedPaths = await uploadFilesToSupabase(selectedFiles, formData);
+
+          if (uploadedPaths.length > 0) {
+            formData.file_urls = uploadedPaths.join(', ');
+            console.log('✅ Files uploaded:', uploadedPaths);
+          } else {
+            console.warn('⚠️ No files were uploaded successfully (nomination will still save)');
+          }
+        }
+
+        // ——— Step 2: Save nomination to Supabase DB ———
+        submitBtn.textContent = 'Saving…';
         const { data: sbData, error: sbError } = await saveToSupabase(formData);
 
         if (sbError) {
@@ -202,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Submission Failed',
             'Could not save your nomination. Please check your connection and try again.'
           );
-          return; // Don't proceed to emails if DB save failed
+          return;
         }
 
         console.log('✅ Nomination saved to Supabase:', sbData);
