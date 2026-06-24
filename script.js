@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'image/jpeg', 'image/png',
     'video/mp4', 'video/quicktime'
   ];
-  const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+  const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
 
   function formatBytes(bytes) {
     if (bytes < 1024) return bytes + ' B';
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
       field.classList.add('error');
     } else {
       if (hasError) {
-        showToast('error', 'Some files rejected', 'Files must be under 100MB and of allowed types.');
+        showToast('error', 'Some files rejected', 'Files must be under 50MB and of allowed types.');
       }
       field.classList.remove('error');
     }
