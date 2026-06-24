@@ -6,6 +6,36 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ——————————————————————————————
+  // 0. SUPABASE CLIENT
+  // ——————————————————————————————
+
+  const SUPABASE_URL  = 'https://hubxctffnforizfayfzv.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1YnhjdGZmbmZvcml6ZmF5Znp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMTY1MzksImV4cCI6MjA5Nzg5MjUzOX0.qn7eHCjefFw9tDydCA8Xpn88_YR84WsetU04DItAKXU';
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  /**
+   * Insert a nomination row into the Supabase `nominations` table.
+   * Returns { data, error } — caller handles the error.
+   */
+  async function saveToSupabase(formData) {
+    const { data, error } = await supabase
+      .from('nominations')
+      .insert([{
+        first_name:   formData.first_name,
+        last_name:    formData.last_name,
+        email:        formData.email,
+        phone:        formData.phone,
+        speaker_name: formData.speaker_name,
+        core_idea:    formData.core_idea,
+        why_speaker:  formData.why_speaker,
+        file_names:   formData.file_names || null
+      }]);
+
+    return { data, error };
+  }
+
+  // ——————————————————————————————
   // 1. SCROLL-REVEAL ANIMATIONS
   // ——————————————————————————————
 
@@ -136,69 +166,93 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ——— EmailJS Configuration ———
-      // Replace these with your actual EmailJS credentials
       const EMAILJS_PUBLIC_KEY   = 'ONjViRAkMpCeXS4_U';
       const EMAILJS_SERVICE_ID   = 'service_xb39y8x';
       const EMAILJS_TEMPLATE_ADMIN = 'template_5sovydg';
       const EMAILJS_TEMPLATE_USER  = 'template_om2uizy';
 
-      // Submit via EmailJS (dual email: admin + user)
+      // Show loading state
       submitBtn.classList.add('loading');
       submitBtn.textContent = 'Submitting';
 
-      // Shared data for both templates
-      const templateParams = {
-        first_name:       firstName.value.trim(),
-        last_name:        lastName.value.trim(),
-        email:            email.value.trim(),
-        phone:            phone.value.trim(),
-        speaker_name:     speakerName.value.trim(),
-        core_idea:        coreIdea.value.trim(),
-        why_speaker:      whySpeaker.value.trim(),
-        speaker_doc_name: typeof selectedFiles !== 'undefined' && selectedFiles.length > 0
-                            ? selectedFiles.map(f => f.name).join(', ')
-                            : 'No files uploaded'
-      };
+      // Shared form data
+      const fileNamesStr = typeof selectedFiles !== 'undefined' && selectedFiles.length > 0
+        ? selectedFiles.map(f => f.name).join(', ')
+        : null;
 
-
-      // User template needs these extra fields for EmailJS to know the recipient
-      const userTemplateParams = {
-        ...templateParams,
-        to_email: email.value.trim(),
-        reply_to: email.value.trim(),
-        to_name:  firstName.value.trim() + ' ' + lastName.value.trim()
+      const formData = {
+        first_name:   firstName.value.trim(),
+        last_name:    lastName.value.trim(),
+        email:        email.value.trim(),
+        phone:        phone.value.trim(),
+        speaker_name: speakerName.value.trim(),
+        core_idea:    coreIdea.value.trim(),
+        why_speaker:  whySpeaker.value.trim(),
+        file_names:   fileNamesStr
       };
 
       try {
-        // Initialize EmailJS
-        emailjs.init(EMAILJS_PUBLIC_KEY);
+        // ——— Step 1: Save to Supabase (primary data store) ———
+        const { data: sbData, error: sbError } = await saveToSupabase(formData);
 
-        // 1) Send admin notification first
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, templateParams);
-        console.log('✅ Admin email sent successfully');
+        if (sbError) {
+          console.error('❌ Supabase Error:', sbError);
+          showToast(
+            'error',
+            'Submission Failed',
+            'Could not save your nomination. Please check your connection and try again.'
+          );
+          return; // Don't proceed to emails if DB save failed
+        }
 
-        // 2) Send user confirmation
+        console.log('✅ Nomination saved to Supabase:', sbData);
+
+        // ——— Step 2: Send EmailJS notifications (best-effort) ———
+        const templateParams = {
+          ...formData,
+          speaker_doc_name: fileNamesStr || 'No files uploaded'
+        };
+
+        const userTemplateParams = {
+          ...templateParams,
+          to_email: formData.email,
+          reply_to: formData.email,
+          to_name:  formData.first_name + ' ' + formData.last_name
+        };
+
         try {
-          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_USER, userTemplateParams);
-          console.log('✅ User confirmation email sent successfully');
-        } catch (userErr) {
-          console.error('❌ User email failed:', userErr);
+          emailjs.init(EMAILJS_PUBLIC_KEY);
+
+          // Admin notification
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, templateParams);
+          console.log('✅ Admin email sent successfully');
+
+          // User confirmation
+          try {
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_USER, userTemplateParams);
+            console.log('✅ User confirmation email sent successfully');
+          } catch (userErr) {
+            console.error('⚠️ User email failed (nomination still saved):', userErr);
+          }
+        } catch (emailErr) {
+          console.error('⚠️ EmailJS Error (nomination still saved):', emailErr);
+          // Don't block success — data is already safely in Supabase
         }
 
         showToast(
           'success',
           'Nomination Submitted!',
-          'Thank you! A confirmation email has been sent to ' + templateParams.email + '. If you don\'t see it, please check your Spam or Promotions folder.'
+          'Thank you! Your nomination has been recorded. A confirmation email has been sent to ' + formData.email + '.'
         );
         form.reset();
         clearFile();
 
       } catch (err) {
-        console.error('❌ EmailJS Error:', err);
+        console.error('❌ Unexpected Error:', err);
         showToast(
           'error',
           'Submission Failed',
-          'Could not send the email. Please check your connection and try again.'
+          'Something went wrong. Please try again.'
         );
       } finally {
         submitBtn.classList.remove('loading');
