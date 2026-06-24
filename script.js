@@ -148,14 +148,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Shared data for both templates
       const templateParams = {
-        first_name:   firstName.value.trim(),
-        last_name:    lastName.value.trim(),
-        email:        email.value.trim(),
-        phone:        phone.value.trim(),
-        speaker_name: speakerName.value.trim(),
-        core_idea:    coreIdea.value.trim(),
-        why_speaker:  whySpeaker.value.trim()
+        first_name:       firstName.value.trim(),
+        last_name:        lastName.value.trim(),
+        email:            email.value.trim(),
+        phone:            phone.value.trim(),
+        speaker_name:     speakerName.value.trim(),
+        core_idea:        coreIdea.value.trim(),
+        why_speaker:      whySpeaker.value.trim(),
+        speaker_doc_name: typeof selectedFiles !== 'undefined' && selectedFiles.length > 0
+                            ? selectedFiles.map(f => f.name).join(', ')
+                            : 'No files uploaded'
       };
+
 
       // User template needs these extra fields for EmailJS to know the recipient
       const userTemplateParams = {
@@ -187,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'Thank you! A confirmation email has been sent to ' + templateParams.email + '. If you don\'t see it, please check your Spam or Promotions folder.'
         );
         form.reset();
+        clearFile();
 
       } catch (err) {
         console.error('❌ EmailJS Error:', err);
@@ -228,8 +233,118 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ——————————————————————————————
-  // 4. TOAST NOTIFICATIONS
+  // 4. FILE UPLOAD FIELD
   // ——————————————————————————————
+
+  const fileInput  = document.getElementById('speaker-doc');
+  const fileWrap   = document.getElementById('file-upload-wrap');
+  const fileListEl = document.getElementById('file-list');
+
+  // We make selectedFiles global to the form so templateParams can access it
+  window.selectedFiles = [];
+
+  const ALLOWED_TYPES = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'image/jpeg', 'image/png',
+    'video/mp4', 'video/quicktime'
+  ];
+  const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function renderFileList() {
+    fileListEl.innerHTML = '';
+    
+    window.selectedFiles.forEach((file, index) => {
+      const row = document.createElement('div');
+      row.className = 'file-selected visible';
+      row.innerHTML = `
+        <span class="file-icon">📎</span>
+        <span class="file-name">${file.name}</span>
+        <span class="file-size">${formatBytes(file.size)}</span>
+        <button type="button" class="file-remove" data-index="${index}" title="Remove file">✕</button>
+      `;
+      fileListEl.appendChild(row);
+    });
+
+    // Reset input value so same files can be selected again
+    fileInput.value = '';
+  }
+
+  function applyFiles(files) {
+    const field = fileInput.closest('.field');
+    let hasError = false;
+
+    Array.from(files).forEach(file => {
+      if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_BYTES) {
+        hasError = true;
+      } else {
+        // Prevent exact duplicates
+        if (!window.selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+          window.selectedFiles.push(file);
+        }
+      }
+    });
+
+    if (hasError && window.selectedFiles.length === 0) {
+      field.classList.add('error');
+    } else {
+      if (hasError) {
+        showToast('error', 'Some files rejected', 'Files must be under 100MB and of allowed types.');
+      }
+      field.classList.remove('error');
+    }
+    
+    renderFileList();
+  }
+
+  // To be called when form is reset
+  window.clearFile = function() {
+    window.selectedFiles = [];
+    renderFileList();
+    if (fileInput) fileInput.closest('.field').classList.remove('error');
+  };
+
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) applyFiles(fileInput.files);
+    });
+
+    fileWrap.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileWrap.classList.add('dragover');
+    });
+
+    fileWrap.addEventListener('dragleave', () => {
+      fileWrap.classList.remove('dragover');
+    });
+
+    fileWrap.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileWrap.classList.remove('dragover');
+      if (e.dataTransfer.files.length) applyFiles(e.dataTransfer.files);
+    });
+
+    // Delegate remove button clicks
+    fileListEl.addEventListener('click', (e) => {
+      if (e.target.classList.contains('file-remove')) {
+        e.stopPropagation();
+        const index = parseInt(e.target.getAttribute('data-index'), 10);
+        window.selectedFiles.splice(index, 1);
+        renderFileList();
+      }
+    });
+  }
+
+
 
   function showToast(type, title, message) {
     // Remove any existing toast
