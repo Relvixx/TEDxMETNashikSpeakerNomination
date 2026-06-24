@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(
           'success',
           'Nomination Submitted!',
-          'Thank you! Your nomination has been recorded. A confirmation email has been sent to ' + formData.email + '.'
+          'Thank you! Your nomination has been recorded. A confirmation email has been sent to ' + formData.email + '. Please check your Spam or Promotions folder if you don\'t see it.'
         );
         form.reset();
         clearFile();
