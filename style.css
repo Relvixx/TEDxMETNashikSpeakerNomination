@@ -1231,3 +1231,35 @@ footer{
   }
 
 }
+
+/* =========================
+   ACCESSIBILITY (REDUCED MOTION)
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-left,
+  .reveal-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .scroll {
+    animation: none !important;
+  }
+
+  .submit-btn.loading::after {
+    animation: none !important;
+    content: '...' !important;
+    border: none !important;
+    width: auto !important;
+    height: auto !important;
+    margin-left: 5px !important;
+  }
+
+  .file-selected,
+  .success-panel {
+    animation: none !important;
+  }
+}
