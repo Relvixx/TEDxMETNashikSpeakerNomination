@@ -444,12 +444,22 @@ document.addEventListener('DOMContentLoaded', () => {
     fileInput.value = '';
   }
 
+  const ALLOWED_EXTS = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'mp4', 'mov'];
+
   function applyFiles(files) {
     const field = fileInput.closest('.field');
     let hasError = false;
 
     Array.from(files).forEach(file => {
-      if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_BYTES) {
+      const fileNameParts = file.name.split('.');
+      const ext = fileNameParts.length > 1 ? fileNameParts.pop().toLowerCase() : '';
+      
+      const isTypeValid = ALLOWED_TYPES.includes(file.type);
+      const isExtValid = ALLOWED_EXTS.includes(ext);
+      
+      const isValidType = isTypeValid || isExtValid;
+
+      if (!isValidType || file.size > MAX_BYTES) {
         hasError = true;
       } else {
         // Prevent exact duplicates
