@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // 0. SUPABASE CLIENT
   // ——————————————————————————————
 
-  const SUPABASE_URL  = 'https://hubxctffnforizfayfzv.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1YnhjdGZmbmZvcml6ZmF5Znp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMTY1MzksImV4cCI6MjA5Nzg5MjUzOX0.qn7eHCjefFw9tDydCA8Xpn88_YR84WsetU04DItAKXU';
+  const SUPABASE_URL  = window.CONFIG.SUPABASE_URL;
+  const SUPABASE_ANON = window.CONFIG.SUPABASE_ANON;
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
@@ -205,10 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ——— EmailJS Configuration ———
-      const EMAILJS_PUBLIC_KEY   = 'ONjViRAkMpCeXS4_U';
-      const EMAILJS_SERVICE_ID   = 'service_xb39y8x';
-      const EMAILJS_TEMPLATE_ADMIN = 'template_5sovydg';
-      const EMAILJS_TEMPLATE_USER  = 'template_om2uizy';
+      const EMAILJS_PUBLIC_KEY   = window.CONFIG.EMAILJS_PUBLIC_KEY;
+      const EMAILJS_SERVICE_ID   = window.CONFIG.EMAILJS_SERVICE_ID;
+      const EMAILJS_TEMPLATE_ADMIN = window.CONFIG.EMAILJS_TEMPLATE_ADMIN;
+      const EMAILJS_TEMPLATE_USER  = window.CONFIG.EMAILJS_TEMPLATE_USER;
 
       // Show loading state
       submitBtn.classList.add('loading');
