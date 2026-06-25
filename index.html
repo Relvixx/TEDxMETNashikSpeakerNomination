@@ -55,9 +55,19 @@
     <a href="#about" class="nav-link">About</a>
     <a href="#criteria" class="nav-link">Criteria</a>
     <a href="#nominate" class="nav-btn">Nominate</a>
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Open menu">☰</button>
   </div>
 
 </nav>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu-overlay" id="mobile-menu-overlay">
+  <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">✕</button>
+  <div class="mobile-menu-links">
+    <a href="#about" class="mobile-nav-link">About</a>
+    <a href="#criteria" class="mobile-nav-link">Criteria</a>
+  </div>
+</div>
 
 <!-- HERO -->
 
@@ -326,6 +336,9 @@
             </div>
           </div>
           <div class="file-list" id="file-list"></div>
+        </div>
+        <div class="upload-progress-wrap" id="upload-progress-wrap">
+          <div class="upload-progress-bar" id="upload-progress-bar"></div>
         </div>
         <span class="error-msg">One or more files exceed 50 MB or are an unsupported type.</span>
       </div>

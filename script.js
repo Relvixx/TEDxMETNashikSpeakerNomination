@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Each submission gets a unique folder: submissions/<userName>_<timestamp>_<random>/
    * Returns an array of storage paths on success, or an empty array on failure.
    */
-  async function uploadFilesToSupabase(files, formData) {
+  async function uploadFilesToSupabase(files, formData, onProgress) {
     // Generate a unique folder name for this submission
     const safeUserName = `${formData.first_name}_${formData.last_name}`.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -49,8 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const folder    = `submissions/${safeUserName}_${timestamp}_${randomId}`;
 
     const uploadedPaths = [];
+    const total = files.length;
+    let completed = 0;
 
     for (const file of files) {
+      if (onProgress) onProgress(completed, total);
+
       // Sanitize filename: replace spaces with underscores
       const safeName = file.name.replace(/\s+/g, '_');
       const filePath = `${folder}/${safeName}`;
@@ -69,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`✅ Uploaded: ${data.path}`);
         uploadedPaths.push(data.path);
       }
+      
+      completed++;
+      if (onProgress) onProgress(completed, total);
     }
 
     return uploadedPaths;
@@ -235,8 +242,24 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         // ——— Step 1: Upload files to Supabase Storage (if any) ———
         if (hasFiles) {
-          submitBtn.textContent = 'Uploading files…';
-          const uploadedPaths = await uploadFilesToSupabase(selectedFiles, formData);
+          const totalFiles = selectedFiles.length;
+          submitBtn.textContent = `Uploading 1 of ${totalFiles} files…`;
+          const progressWrap = document.getElementById('upload-progress-wrap');
+          const progressBar = document.getElementById('upload-progress-bar');
+          
+          if (progressWrap) progressWrap.classList.add('show');
+          if (progressBar) progressBar.style.width = '0%';
+
+          const uploadedPaths = await uploadFilesToSupabase(selectedFiles, formData, (completed, total) => {
+            if (completed < total) {
+              submitBtn.textContent = `Uploading ${completed + 1} of ${total} files…`;
+            } else {
+              submitBtn.textContent = 'Finishing upload…';
+            }
+            if (progressBar) progressBar.style.width = `${(completed / total) * 100}%`;
+          });
+          
+          if (progressWrap) progressWrap.classList.remove('show');
 
           if (uploadedPaths.length > 0) {
             formData.file_urls = uploadedPaths.join(', ');
@@ -506,5 +529,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.3 });
 
   sections.forEach(s => navObserver.observe(s));
+
+  // ——————————————————————————————
+  // 6. MOBILE MENU
+  // ——————————————————————————————
+
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+  if (hamburgerBtn && mobileMenuOverlay && mobileMenuClose) {
+    hamburgerBtn.addEventListener('click', () => {
+      mobileMenuOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    });
+
+    mobileMenuClose.addEventListener('click', () => {
+      mobileMenuOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+  }
 
 });
