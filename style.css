@@ -694,6 +694,109 @@ nav{
   to{ transform:rotate(360deg); }
 }
 
+.form-grid.hide {
+  display: none;
+}
+
+/* =========================
+   SUCCESS PANEL
+========================= */
+
+.text-red {
+  color: var(--red);
+}
+
+.success-panel {
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  margin-top: 40px;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-panel.show {
+  display: flex;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(230, 43, 30, 0.1);
+  color: var(--red);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  margin-bottom: 24px;
+}
+
+.success-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 4vw, 56px);
+  color: white;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.success-email {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 40px;
+}
+
+.success-email strong {
+  color: white;
+  font-weight: 500;
+}
+
+.success-next {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 32px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.success-next h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: white;
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.success-next ol {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.success-next li {
+  color: #bbb;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  line-height: 1.5;
+}
+
+.success-next li strong {
+  color: white;
+  font-weight: 500;
+}
+
 /* =========================
    FILE UPLOAD FIELD
 ========================= */

@@ -335,6 +335,18 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         clearFile();
 
+        // Show Success Panel
+        const successPanel = document.getElementById('success-panel');
+        if (successPanel) {
+          const speakerNameEl = document.getElementById('success-speaker-name');
+          const emailAddressEl = document.getElementById('success-email-address');
+          if (speakerNameEl) speakerNameEl.textContent = formData.speaker_name;
+          if (emailAddressEl) emailAddressEl.textContent = formData.email;
+          
+          form.classList.add('hide');
+          successPanel.classList.add('show');
+        }
+
       } catch (err) {
         console.error('❌ Unexpected Error:', err);
         showToast(
@@ -347,6 +359,17 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Submit Nomination';
       }
     });
+
+    const nominateAnotherBtn = document.getElementById('nominate-another-btn');
+    if (nominateAnotherBtn) {
+      nominateAnotherBtn.addEventListener('click', () => {
+        const successPanel = document.getElementById('success-panel');
+        if (successPanel) {
+          successPanel.classList.remove('show');
+          form.classList.remove('hide');
+        }
+      });
+    }
   }
 
   function markError(inputEl, message) {
