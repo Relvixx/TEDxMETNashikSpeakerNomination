@@ -282,44 +282,49 @@
 
       <div class="field reveal">
         <label for="first-name">First Name</label>
-        <input type="text" id="first-name" name="first_name" placeholder="Arjun" required>
-        <span class="error-msg">First name is required</span>
+        <input type="text" id="first-name" name="first_name" placeholder="Arjun" aria-describedby="error-first-name" required>
+        <span id="error-first-name" class="error-msg" role="alert">First name is required</span>
       </div>
 
       <div class="field reveal">
         <label for="last-name">Last Name</label>
-        <input type="text" id="last-name" name="last_name" placeholder="Sharma" required>
-        <span class="error-msg">Last name is required</span>
+        <input type="text" id="last-name" name="last_name" placeholder="Sharma" aria-describedby="error-last-name" required>
+        <span id="error-last-name" class="error-msg" role="alert">Last name is required</span>
       </div>
 
       <div class="field reveal">
         <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="arjun@example.com" required>
-        <span class="error-msg">Please enter a valid email</span>
+        <input type="email" id="email" name="email" placeholder="arjun@example.com" aria-describedby="error-email" required>
+        <span id="error-email" class="error-msg" role="alert">Please enter a valid email</span>
       </div>
 
       <div class="field reveal">
         <label for="phone">Phone Number</label>
-        <input type="text" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required>
-        <span class="error-msg">Please enter a valid phone number</span>
+        <input type="text" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" aria-describedby="error-phone" required>
+        <span id="error-phone" class="error-msg" role="alert">Please enter a valid phone number</span>
       </div>
 
       <div class="field full reveal">
         <label for="speaker-name">Speaker Name</label>
-        <input type="text" id="speaker-name" name="speaker_name" placeholder="Speaker Full Name" required>
-        <span class="error-msg">Speaker name is required</span>
+        <input type="text" id="speaker-name" name="speaker_name" placeholder="Speaker Full Name" aria-describedby="error-speaker-name" required>
+        <span id="error-speaker-name" class="error-msg" role="alert">Speaker name is required</span>
+      </div>
+
+      <div class="field full reveal">
+        <label for="speaker-linkedin">Speaker's LinkedIn <span class="field-optional">(Optional)</span></label>
+        <input type="url" id="speaker-linkedin" name="speaker_linkedin" placeholder="https://linkedin.com/in/username">
       </div>
 
       <div class="field full reveal">
         <label for="core-idea">Core Idea</label>
-        <textarea id="core-idea" name="core_idea" placeholder="What idea should this speaker share?" required></textarea>
-        <span class="error-msg">Core idea is required</span>
+        <textarea id="core-idea" name="core_idea" placeholder="What idea should this speaker share?" aria-describedby="error-core-idea" required></textarea>
+        <span id="error-core-idea" class="error-msg" role="alert">Core idea is required</span>
       </div>
 
       <div class="field full reveal">
         <label for="why-speaker">Why This Speaker?</label>
-        <textarea id="why-speaker" name="why_speaker" placeholder="Why are they the right person for this idea?" required></textarea>
-        <span class="error-msg">This field is required</span>
+        <textarea id="why-speaker" name="why_speaker" placeholder="Why are they the right person for this idea?" aria-describedby="error-why-speaker" required></textarea>
+        <span id="error-why-speaker" class="error-msg" role="alert">This field is required</span>
       </div>
 
       <div class="field full reveal">

@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         email:        formData.email,
         phone:        formData.phone,
         speaker_name: formData.speaker_name,
+        speaker_linkedin: formData.speaker_linkedin || null,
         core_idea:    formData.core_idea,
         why_speaker:  formData.why_speaker,
         file_names:   formData.file_names || null,
@@ -169,7 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
 
       // Clear previous errors
-      form.querySelectorAll('.field.error').forEach(f => f.classList.remove('error'));
+      form.querySelectorAll('.field.error').forEach(f => {
+        f.classList.remove('error');
+        const input = f.querySelector('input, textarea');
+        if (input) input.removeAttribute('aria-invalid');
+      });
 
       // Validate fields
       let isValid = true;
@@ -179,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('email');
       const phone = document.getElementById('phone');
       const speakerName = document.getElementById('speaker-name');
+      const speakerLinkedin = document.getElementById('speaker-linkedin');
       const coreIdea = document.getElementById('core-idea');
       const whySpeaker = document.getElementById('why-speaker');
 
@@ -243,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         email:        email.value.trim(),
         phone:        phone.value.trim(),
         speaker_name: speakerName.value.trim(),
+        speaker_linkedin: speakerLinkedin ? speakerLinkedin.value.trim() : '',
         core_idea:    coreIdea.value.trim(),
         why_speaker:  whySpeaker.value.trim(),
         file_names:   fileNamesStr,
@@ -375,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function markError(inputEl, message) {
     const field = inputEl.closest('.field');
     field.classList.add('error');
+    inputEl.setAttribute('aria-invalid', 'true');
     const errMsg = field.querySelector('.error-msg');
     if (errMsg) errMsg.textContent = message;
   }
@@ -393,6 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.field input, .field textarea').forEach(input => {
     input.addEventListener('input', () => {
       input.closest('.field').classList.remove('error');
+      input.removeAttribute('aria-invalid');
     });
   });
 
