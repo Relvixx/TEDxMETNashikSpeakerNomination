@@ -9,16 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // 0. SUPABASE CLIENT
   // ——————————————————————————————
 
-  const SUPABASE_URL  = window.CONFIG.SUPABASE_URL;
-  const SUPABASE_ANON = window.CONFIG.SUPABASE_ANON;
-
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  let supabase = null;
+  try {
+    const SUPABASE_URL  = window.CONFIG?.SUPABASE_URL;
+    const SUPABASE_ANON = window.CONFIG?.SUPABASE_ANON;
+    if (SUPABASE_URL && SUPABASE_ANON && window.supabase) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    } else {
+      console.warn('Supabase config or client missing.');
+    }
+  } catch (err) {
+    console.error('Error initializing Supabase:', err);
+  }
 
   /**
    * Insert a nomination row into the Supabase `nominations` table.
    * Returns { data, error } — caller handles the error.
    */
   async function saveToSupabase(formData) {
+    if (!supabase) return { data: null, error: new Error('Supabase client not initialized (missing config)') };
     const { data, error } = await supabase
       .from('nominations')
       .insert([{
@@ -42,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Returns an array of storage paths on success, or an empty array on failure.
    */
   async function uploadFilesToSupabase(files, formData, onProgress) {
+    if (!supabase) throw new Error('Supabase client not initialized');
     // Generate a unique folder name for this submission
     const safeUserName = `${formData.first_name}_${formData.last_name}`.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -212,10 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ——— EmailJS Configuration ———
-      const EMAILJS_PUBLIC_KEY   = window.CONFIG.EMAILJS_PUBLIC_KEY;
-      const EMAILJS_SERVICE_ID   = window.CONFIG.EMAILJS_SERVICE_ID;
-      const EMAILJS_TEMPLATE_ADMIN = window.CONFIG.EMAILJS_TEMPLATE_ADMIN;
-      const EMAILJS_TEMPLATE_USER  = window.CONFIG.EMAILJS_TEMPLATE_USER;
+      const EMAILJS_PUBLIC_KEY   = window.CONFIG?.EMAILJS_PUBLIC_KEY;
+      const EMAILJS_SERVICE_ID   = window.CONFIG?.EMAILJS_SERVICE_ID;
+      const EMAILJS_TEMPLATE_ADMIN = window.CONFIG?.EMAILJS_TEMPLATE_ADMIN;
+      const EMAILJS_TEMPLATE_USER  = window.CONFIG?.EMAILJS_TEMPLATE_USER;
 
       // Show loading state
       submitBtn.classList.add('loading');
