@@ -17,7 +17,6 @@ yarn.lock
 # Environment files
 .env
 .env.local
-config.js
 
 # Build and dist files
 dist/
