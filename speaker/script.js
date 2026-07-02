@@ -426,7 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'image/jpeg', 'image/png',
     'video/mp4', 'video/quicktime'
   ];
-  const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+  const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+  const MAX_FILES = 5;
 
   function formatBytes(bytes) {
     if (bytes < 1024) return bytes + ' B';
@@ -458,8 +459,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyFiles(files) {
     const field = fileInput.closest('.field');
     let hasError = false;
+    let limitReached = false;
 
     Array.from(files).forEach(file => {
+      // Check file count limit first
+      if (window.selectedFiles.length >= MAX_FILES) {
+        limitReached = true;
+        return;
+      }
+
       const fileNameParts = file.name.split('.');
       const ext = fileNameParts.length > 1 ? fileNameParts.pop().toLowerCase() : '';
       
@@ -478,11 +486,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    if (limitReached) {
+      showToast('error', 'File limit reached', `You can upload a maximum of ${MAX_FILES} files.`);
+    }
+
     if (hasError && window.selectedFiles.length === 0) {
       field.classList.add('error');
     } else {
       if (hasError) {
-        showToast('error', 'Some files rejected', 'Files must be under 50MB and of allowed types.');
+        showToast('error', 'Some files rejected', 'Files must be under 10 MB and of allowed types.');
       }
       field.classList.remove('error');
     }
