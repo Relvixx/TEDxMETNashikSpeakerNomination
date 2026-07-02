@@ -1,18 +1,24 @@
 <p align="center">
-  <img src="assets/logo-black.png" alt="TEDxMET Nashik Logo" width="320" />
-  <br />
-  <h1 align="center"><b>TEDxMET Nashik — Speaker Nominations</b></h1>
-  <p align="center"><i>Crowdsource exceptional speakers for TEDxMET Nashik 2026 through a polished, end-to-end nomination pipeline</i></p>
-  <p align="center">
-    <a href="https://www.tedxmetnashik.in/speaker"><img src="https://img.shields.io/badge/🔴_Live_Demo_→-tedxmetnashik.in-E62B1E?style=for-the-badge" alt="Live Demo" /></a>
-    <br /><br />
-    <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
-    <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-    <img src="https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
-    <img src="https://img.shields.io/badge/EmailJS-FF6F00?style=for-the-badge&logoColor=white" alt="EmailJS" />
-    <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
-  </p>
+  <a href="https://www.tedxmetnashik.in/speaker">
+    <img src="assets/banner.svg" alt="TEDxMET Nashik — Speaker Nominations 2026" width="900" />
+  </a>
+</p>
+
+<p align="center">
+  <i>Crowdsource exceptional speakers for TEDxMET Nashik 2026 through a polished, end-to-end nomination pipeline</i>
+</p>
+
+<p align="center">
+  <a href="https://www.tedxmetnashik.in/speaker"><img src="https://img.shields.io/badge/🔴_Live_Demo_→-tedxmetnashik.in-E62B1E?style=for-the-badge" alt="Live Demo" /></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+  <img src="https://img.shields.io/badge/EmailJS-FF6F00?style=for-the-badge&logoColor=white" alt="EmailJS" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
 </p>
 
 <br />
@@ -21,15 +27,17 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Architecture](#architecture)
-3. [Development Phases](#development-phases)
-4. [Capstone Highlight](#capstone-highlight)
-5. [Getting Started](#getting-started)
-6. [Usage](#usage)
-7. [Engineering Notes](#engineering-notes)
-8. [Roadmap](#roadmap)
-9. [Contributing](#contributing)
-10. [License](#license)
+2. [System Architecture](#system-architecture)
+3. [Submission Flow](#submission-flow)
+4. [Tech Stack Deep Dive](#tech-stack-deep-dive)
+5. [Development Phases](#development-phases)
+6. [Capstone Highlight](#capstone-highlight)
+7. [Getting Started](#getting-started)
+8. [Usage](#usage)
+9. [Engineering Notes](#engineering-notes)
+10. [Roadmap](#roadmap)
+11. [Contributing](#contributing)
+12. [License](#license)
 
 ## Overview
 
@@ -48,7 +56,49 @@ A full-stack speaker nomination platform for TEDxMET Nashik 2026 — the indepen
 
 *Built with: `HTML5, CSS3, Vanilla JavaScript, Supabase (PostgreSQL + Storage), EmailJS`.*
 
-## Architecture
+## System Architecture
+
+The nomination pipeline operates as a serverless frontend-to-BaaS architecture with zero custom backend code. All persistence, storage, and email delivery delegate to managed services.
+
+```mermaid
+graph TB
+    subgraph CLIENT["🌐 Client Browser"]
+        LP["Landing Page<br/><code>index.html</code>"]
+        NF["Nomination Form<br/><code>speaker/index.html</code>"]
+        VAL["Client-Side Validation<br/><code>speaker/script.js</code>"]
+        FU["File Upload Engine<br/>Drag & Drop + Progress"]
+    end
+
+    subgraph SUPABASE["☁️ Supabase (BaaS)"]
+        DB[("PostgreSQL<br/><code>nominations</code> table")]
+        ST[("Object Storage<br/><code>nominations</code> bucket")]
+        RLS["Row Level Security<br/>INSERT-only (anon)"]
+    end
+
+    subgraph EMAILJS["📧 EmailJS"]
+        ADM["Admin Notification<br/>Template"]
+        USR["Nominator Confirmation<br/>Template"]
+    end
+
+    LP -->|CTA Click| NF
+    NF -->|Submit| VAL
+    VAL -->|Valid| FU
+    FU -->|"Files (≤5, ≤10MB each)"| ST
+    VAL -->|Form Data + File URLs| DB
+    DB -.->|Success| EMAILJS
+    VAL -->|Template Params| ADM
+    VAL -->|Template Params| USR
+    RLS -->|Enforces| DB
+
+    style CLIENT fill:#1a1a2e,stroke:#E62B1E,stroke-width:2px,color:#fff
+    style SUPABASE fill:#1a2e1a,stroke:#3FCF8E,stroke-width:2px,color:#fff
+    style EMAILJS fill:#2e1a1a,stroke:#FF6F00,stroke-width:2px,color:#fff
+    style DB fill:#0d2818,stroke:#3FCF8E,color:#fff
+    style ST fill:#0d2818,stroke:#3FCF8E,color:#fff
+    style RLS fill:#0d2818,stroke:#3FCF8E,color:#fff
+    style ADM fill:#2e1008,stroke:#FF6F00,color:#fff
+    style USR fill:#2e1008,stroke:#FF6F00,color:#fff
+```
 
 <details>
 <summary>📁 Repository structure</summary>
@@ -61,6 +111,7 @@ A full-stack speaker nomination platform for TEDxMET Nashik 2026 — the indepen
 ├── config.example.js       # Template for Supabase + EmailJS credentials
 ├── config.js               # Active credentials (gitignored in production)
 ├── assets/
+│   ├── banner.svg          # Animated SVG hero banner for README
 │   ├── favicon.svg         # SVG favicon
 │   └── logo-black.png      # TEDxMET Nashik brand logo
 ├── speaker/
@@ -73,6 +124,87 @@ A full-stack speaker nomination platform for TEDxMET Nashik 2026 — the indepen
 ```
 
 </details>
+
+## Submission Flow
+
+Step-by-step sequence of a nomination from form fill to confirmation email. Every arrow represents an actual async operation in the codebase.
+
+```mermaid
+sequenceDiagram
+    actor N as Nominator
+    participant F as Form UI
+    participant V as Validator
+    participant S as Supabase Storage
+    participant D as Supabase DB
+    participant E as EmailJS
+    participant A as Admin
+
+    N->>F: Fills nomination form
+    N->>F: Drags & drops files (optional)
+
+    F->>V: Submit event fires
+    V->>V: Validate all required fields
+    V->>V: Validate email format (regex)
+    V->>V: Validate phone (10-15 digits)
+
+    alt Validation fails
+        V-->>F: Mark fields with error state
+        F-->>N: Scroll to first error
+    end
+
+    rect rgb(13, 40, 24)
+        Note over F,S: File Upload Phase
+        F->>F: Show progress bar
+        loop For each file (≤5)
+            F->>S: Upload file to submissions/{user}_{timestamp}/
+            S-->>F: Return storage path
+            F->>F: Update progress (n of total)
+        end
+    end
+
+    rect rgb(13, 40, 24)
+        Note over F,D: Database Persistence
+        F->>D: INSERT nomination row
+        D->>D: RLS policy check (anon INSERT)
+        D-->>F: Confirm write
+    end
+
+    rect rgb(46, 16, 8)
+        Note over F,E: Email Notifications (best-effort)
+        F->>E: Send admin notification
+        E-->>A: 📧 New nomination alert
+        F->>E: Send nominator confirmation
+        E-->>N: 📧 "Your nomination was received"
+    end
+
+    F->>F: Hide form, show success panel
+    F-->>N: Display "What Happens Next" steps
+```
+
+## Tech Stack Deep Dive
+
+<table>
+<tr>
+<td width="80" align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="40" alt="HTML5"/><br /><b>HTML5</b></td>
+<td><b>Semantic Structure & SEO</b><br />Two-page static architecture with full Open Graph, Twitter Card, and structured meta. ARIA attributes on all form controls. Semantic landmarks (<code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;footer&gt;</code>) ensure screen-reader compatibility.</td>
+</tr>
+<tr>
+<td width="80" align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="40" alt="CSS3"/><br /><b>CSS3</b></td>
+<td><b>Premium Visual Layer</b><br />Custom-property design system. Radial-gradient glow effects with <code>mix-blend-mode</code>. CSS Grid for the nomination form layout. <code>@media</code> breakpoints for mobile-first responsiveness. Transition choreography on scroll-reveal elements with staggered delays.</td>
+</tr>
+<tr>
+<td width="80" align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="40" alt="JavaScript"/><br /><b>JavaScript</b></td>
+<td><b>Interaction Engine</b><br />Zero dependencies for the landing page. <code>IntersectionObserver</code> API for scroll-triggered reveals and stat counter animations. <code>requestAnimationFrame</code> loop with damped interpolation (<code>0.04</code> factor) for mouse-following glow. Real-time form validation with field-level error clearing on <code>input</code> events.</td>
+</tr>
+<tr>
+<td width="80" align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg" width="40" alt="Supabase"/><br /><b>Supabase</b></td>
+<td><b>Backend-as-a-Service</b><br />PostgreSQL database stores nomination records (<code>nominations</code> table). Object Storage bucket handles file uploads with unique per-submission folders (<code>submissions/{name}_{timestamp}_{randomId}/</code>). Row Level Security restricts the anon role to <code>INSERT</code> only — no reads, updates, or deletes.</td>
+</tr>
+<tr>
+<td width="80" align="center"><img src="https://img.icons8.com/fluency/48/email.png" width="40" alt="EmailJS"/><br /><b>EmailJS</b></td>
+<td><b>Transactional Email</b><br />Client-side email dispatch — no SMTP server required. Two template IDs: one for admin team alerts (includes all form data + file names), one for nominator confirmation (personalized "thank you"). Fire-and-forget pattern: email failures never block the Supabase write.</td>
+</tr>
+</table>
 
 ## Development Phases
 
