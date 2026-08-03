@@ -2,131 +2,582 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TEDxMET Nashik 2026 — Coming Soon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEDxMET Nashik 2026 — Dimensions</title>
 
   <!-- SEO -->
-  <meta name="description" content="TEDxMET Nashik 2026 is building a brand new digital experience. Stay tuned for ideas worth spreading." />
-  <meta name="keywords" content="TEDx, TEDxMET, Nashik, Coming Soon, Ideas Worth Spreading, TED Talk, MET Nashik 2026" />
+  <meta name="description" content="TEDxMET Nashik 2026 — Dimensions. Official digital experience for the inaugural TEDx event at MET Bhujbal Knowledge City, Nashik on 17 September 2026." />
+  <meta name="keywords" content="TEDx, TEDxMET Nashik, Dimensions, Nashik, MET Bhujbal Knowledge City, 2026" />
   <meta name="author" content="TEDxMET Nashik" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="TEDxMET Nashik 2026 — Coming Soon" />
-  <meta property="og:description" content="A brand new experience is on its way. TEDxMET Nashik 2026 — Ideas worth spreading." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.tedxmetnashik.in/" />
-  <meta property="og:image" content="https://www.tedxmetnashik.in/assets/og-image.png" />
-  <meta property="og:site_name" content="TEDxMET Nashik" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="TEDxMET Nashik 2026 — Coming Soon" />
-  <meta name="twitter:description" content="A brand new experience is on its way. TEDxMET Nashik 2026 — Ideas worth spreading." />
-  <meta name="twitter:image" content="https://www.tedxmetnashik.in/assets/og-image.png" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Typography: Inter Tight & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css" />
-
 </head>
+<body class="swiss-dark-theme">
 
-<body>
+  <!-- Fullscreen WebGL Three.js Canvas -->
+  <canvas id="webgl-canvas"></canvas>
 
-<!-- NAV -->
+  <!-- Dynamic SVG 3D-to-Screen Projection Lines -->
+  <svg id="projection-svg" aria-hidden="true">
+    <line id="proj-line-1" x1="0" y1="0" x2="0" y2="0" stroke="#E62B1E" stroke-width="1" stroke-dasharray="3 3" />
+    <line id="proj-line-2" x1="0" y1="0" x2="0" y2="0" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="2 2" />
+  </svg>
 
-<nav>
+  <!-- Tactile Overlay -->
+  <div id="texture-overlay" aria-hidden="true"></div>
 
-  <div class="nav-left">
-    <div class="ted-logo">TEDx</div>
+  <!-- Subtle Telemetry Badges -->
+  <div class="telemetry-bar telemetry-top-left">TEDxMET Nashik 2026</div>
+  <div class="telemetry-bar telemetry-top-right">20.0063° N, 73.7707° E</div>
+  <div class="telemetry-bar telemetry-bottom-left" id="cam-coords">Camera Angle</div>
+  <div class="telemetry-bar telemetry-bottom-right" id="scroll-pct">Scroll 0%</div>
 
-    <div class="nav-meta">
-      MET Nashik<br>
-      2026
-    </div>
-  </div>
-
-  <div class="nav-right">
-    <a href="https://www.instagram.com/tedxmetnashik/" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="Follow TEDxMET Nashik on Instagram">
-      <svg class="nav-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-      </svg>
-      <span class="nav-link-text">Instagram</span>
-    </a>
-    <a href="/speaker" class="nav-btn" id="nav-cta">Nominate</a>
-  </div>
-
-</nav>
-
-<!-- COMING SOON HERO -->
-
-<main class="coming-soon">
-
-  <!-- Animated glow background -->
-  <div class="cs-glow" aria-hidden="true"></div>
-  <div class="cs-glow cs-glow-2" aria-hidden="true"></div>
-
-  <div class="cs-content">
-
-    <div class="cs-topline reveal">
-      Ideas Worth Spreading — Nashik
-    </div>
-
-    <img src="assets/logo-black.png" alt="TEDxMET Nashik" class="cs-logo reveal">
-
-    <div class="cs-divider reveal" aria-hidden="true"></div>
-
-    <h1 class="cs-headline reveal">
-      A NEW STAGE<br>
-      IS BEING SET
-    </h1>
-
-    <p class="cs-desc reveal">
-      We're crafting a brand new digital experience for
-      TEDxMET Nashik 2026. Something extraordinary is on its way.
-      Until then, help us find the voices that deserve to be heard.
-    </p>
-
-    <div class="cs-actions reveal">
-      <a href="/speaker" class="cs-cta" id="cta-nominate">
-        Nominate A Speaker
-        <span class="cs-cta-arrow">→</span>
+  <!-- Navigation Bar -->
+  <nav id="main-nav" role="navigation" aria-label="Main Navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" aria-label="TEDxMET Nashik Homepage">
+        <img src="assets/logo-white.png" alt="TEDxMET Nashik Logo" class="logo-tedx" />
+        <span class="logo-divider"></span>
+        <img src="assets/LOGO.png" alt="MET BKC Logo" class="logo-college" />
+        <span class="nav-tag">Dimensions</span>
       </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#theme" class="nav-link">Theme</a></li>
+        <li><a href="#speakers" class="nav-link">Speakers</a></li>
+        <li><a href="#experience" class="nav-link">Experience</a></li>
+        <li><a href="#venue" class="nav-link">Venue</a></li>
+        <li><a href="#partners" class="nav-link">Partners</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-nav-nominate js-book-btn">Book Seats</button>
+        <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
+  </nav>
 
-    <div class="cs-social reveal">
-      <span class="cs-social-label">Follow the Journey</span>
-      <a href="https://www.instagram.com/tedxmetnashik/" target="_blank" rel="noopener noreferrer" class="cs-social-link" aria-label="Follow TEDxMET Nashik on Instagram">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-        </svg>
-      </a>
+  <!-- Mobile Menu Drawer -->
+  <div class="nav-mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="drawer-inner">
+      <ul role="list">
+        <li><a href="#theme" class="drawer-link">Theme</a></li>
+        <li><a href="#speakers" class="drawer-link">Speakers</a></li>
+        <li><a href="#experience" class="drawer-link">Experience</a></li>
+        <li><a href="#venue" class="drawer-link">Venue</a></li>
+        <li><a href="#partners" class="drawer-link">Partners</a></li>
+        <li><button class="drawer-link drawer-link--cta js-book-btn" style="width:100%; cursor:pointer;">Book Seats</button></li>
+      </ul>
     </div>
-
   </div>
 
-</main>
+  <main>
 
-<!-- FOOTER -->
+    <!-- SECTION 1: HERO -->
+    <section id="hero" class="section-hero">
+      <div class="hero-container">
+        
+        <div class="hero-text-block">
+          <div class="mono-badge">
+            <span class="mono-dot"></span>
+            <span>Inaugural Edition • 17 Sept 2026</span>
+          </div>
 
-<footer>
+          <h1 class="hero-title" id="hero-title">
+            <span class="letter">D</span><span class="letter">I</span><span class="letter">M</span><span class="letter">E</span><span class="letter">N</span><span class="letter">S</span><span class="letter">I</span><span class="letter">O</span><span class="letter">N</span><span class="letter">S</span>
+          </h1>
 
-  <div class="footer-logo">
-    TEDxMET
+          <p class="hero-subtitle">Ideas Worth Spreading Across Architectural Realities.</p>
+
+          <div class="hero-specs-grid">
+            <div class="spec-cell">
+              <span class="spec-label">Date</span>
+              <span class="spec-val">17.09.2026</span>
+            </div>
+            <div class="spec-cell">
+              <span class="spec-label">Location</span>
+              <span class="spec-val">MET BKC, Nashik</span>
+            </div>
+            <div class="spec-cell">
+              <span class="spec-label">Capacity</span>
+              <span class="spec-val">600 Seats</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn-solid-red js-book-btn">Book Seats</button>
+            <a href="#theme" class="btn-outline-white">Explore Experience</a>
+          </div>
+        </div>
+
+        <div class="hero-target-box" id="hero-3d-target">
+          <div class="target-label">3D Dimensions Node</div>
+        </div>
+
+      </div>
+
+      <div class="hero-scroll-indicator">
+        <span class="mono-text">Scroll to explore</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: EVENT HIGHLIGHT STRIP -->
+    <section class="section-strip">
+      <div class="strip-container">
+        
+        <div class="strip-node">
+          <span class="node-code">Date</span>
+          <div class="node-info">
+            <span class="node-val">17 Sept 2026</span>
+            <span class="node-sub">Inaugural Event</span>
+          </div>
+        </div>
+
+        <div class="strip-sep">•</div>
+
+        <div class="strip-node">
+          <span class="node-code">Talks</span>
+          <div class="node-info">
+            <span class="node-val">8 Speakers</span>
+            <span class="node-sub">Curated Talks</span>
+          </div>
+        </div>
+
+        <div class="strip-sep">•</div>
+
+        <div class="strip-node">
+          <span class="node-code">Audience</span>
+          <div class="node-info">
+            <span class="node-val">500+ Attendees</span>
+            <span class="node-sub">Delegates</span>
+          </div>
+        </div>
+
+        <div class="strip-sep">•</div>
+
+        <div class="strip-node">
+          <span class="node-code">Live</span>
+          <div class="node-info">
+            <span class="node-val">Ideas & Network</span>
+            <span class="node-sub">Collaboration</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: THEME "DIMENSIONS" -->
+    <section id="theme" class="section-theme">
+      <div class="section-container">
+        
+        <div class="theme-grid">
+          
+          <div class="theme-card-panel" id="theme-panel">
+            <div class="panel-header">
+              <span class="panel-tag">Theme Architecture</span>
+              <span class="panel-id">Dimensions 2026</span>
+            </div>
+            
+            <h2 class="section-heading">Multidimensional Perspectives.</h2>
+            <p class="theme-lead">Every transformational idea exists across overlapping dimensions of human thought.</p>
+
+            <div class="dim-categories-list">
+              <div class="dim-row"><span class="dim-num">01</span><span class="dim-title">Technology</span><span class="dim-state">Active</span></div>
+              <div class="dim-row"><span class="dim-num">02</span><span class="dim-title">Science</span><span class="dim-state">Exploring</span></div>
+              <div class="dim-row"><span class="dim-num">03</span><span class="dim-title">Society</span><span class="dim-state">Connected</span></div>
+              <div class="dim-row"><span class="dim-num">04</span><span class="dim-title">Business</span><span class="dim-state">Transforming</span></div>
+              <div class="dim-row"><span class="dim-num">05</span><span class="dim-title">Art & Design</span><span class="dim-state">Creating</span></div>
+              <div class="dim-row"><span class="dim-num">06</span><span class="dim-title">Humanity</span><span class="dim-state">Embedded</span></div>
+            </div>
+
+            <button class="btn-solid-red mt-24 js-book-btn">Book Seats</button>
+          </div>
+
+          <div class="theme-spatial-anchor" id="theme-3d-anchor">
+            <span class="anchor-text">Point Cloud Globe</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: SPEAKER WALL -->
+    <section id="speakers" class="section-speakers">
+      <div class="section-container">
+        
+        <div class="section-header-row">
+          <div>
+            <span class="section-kicker">Curated Speakers</span>
+            <h2 class="section-heading">Eight Dimensional Voices.</h2>
+          </div>
+          <div class="header-tag-box">
+            <span>Status: Curation in Progress</span>
+          </div>
+        </div>
+
+        <div class="speakers-grid">
+          
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 01</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 01</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 02</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 02</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 03</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 03</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 04</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 04</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 05</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 05</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 06</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 06</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 07</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 07</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <div class="card-head">
+              <span class="sp-num">Speaker 08</span>
+              <span class="sp-tag">Upcoming</span>
+            </div>
+            <div class="card-body">
+              <h3 class="sp-name">Speaker 08</h3>
+              <p class="sp-topic">Topic: To be revealed</p>
+            </div>
+            <div class="card-foot">
+              <span>Status: Announcement Soon</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="sp-action-row">
+          <a href="speaker/index.html" class="btn-solid-red">Nominate Speaker</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 5: EVENT EXPERIENCE -->
+    <section id="experience" class="section-experience">
+      <div class="section-container">
+        
+        <div class="section-header-row">
+          <div>
+            <span class="section-kicker">Event Schedule</span>
+            <h2 class="section-heading">Sequential Experience.</h2>
+          </div>
+        </div>
+
+        <div class="tech-timeline">
+          
+          <div class="tl-node">
+            <div class="tl-code">09:00 AM</div>
+            <div class="tl-card">
+              <h4>Check-in & Registration</h4>
+              <p>Badge collection, reception, and orientation.</p>
+            </div>
+          </div>
+
+          <div class="tl-node">
+            <div class="tl-code">10:00 AM</div>
+            <div class="tl-card">
+              <h4>Session I: Morning Talks</h4>
+              <p>Inspiring 18-minute talks across science, technology, and art.</p>
+            </div>
+          </div>
+
+          <div class="tl-node">
+            <div class="tl-code">01:00 PM</div>
+            <div class="tl-card">
+              <h4>Networking Lunch</h4>
+              <p>Curated culinary experience and active peer discussions.</p>
+            </div>
+          </div>
+
+          <div class="tl-node">
+            <div class="tl-code">02:30 PM</div>
+            <div class="tl-card">
+              <h4>Session II: Afternoon Talks</h4>
+              <p>Deep-dive conversations on society, leadership, and humanity.</p>
+            </div>
+          </div>
+
+          <div class="tl-node">
+            <div class="tl-code">04:30 PM</div>
+            <div class="tl-card">
+              <h4>Closing & Reflections</h4>
+              <p>Summary, speaker felicitations, and networking mixer.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 6: VENUE EXPERIENCE -->
+    <section id="venue" class="section-venue">
+      <div class="section-container">
+        
+        <div class="venue-grid">
+          
+          <div class="venue-info">
+            <span class="section-kicker">Venue Location</span>
+            <h2 class="section-heading">MET Bhujbal Knowledge City, Nashik</h2>
+            <p class="v-desc">A state-of-the-art academic campus designed for innovation, research, and intellectual dialogue.</p>
+            
+            <div class="v-table">
+              <div class="v-row"><span class="v-key">Venue</span><span class="v-val">Main Auditorium, MET BKC</span></div>
+              <div class="v-row"><span class="v-key">City</span><span class="v-val">Nashik, Maharashtra</span></div>
+              <div class="v-row"><span class="v-key">Date</span><span class="v-val">17 September 2026</span></div>
+            </div>
+
+            <a href="https://maps.google.com/?q=MET+Bhujbal+Knowledge+City+Nashik" target="_blank" rel="noopener" class="btn-outline-white mt-24">Open in Google Maps</a>
+          </div>
+
+          <div class="venue-wireframe-card">
+            <div class="wf-content">
+              <span class="wf-code">Venue Stage</span>
+              <h3>MET BKC Auditorium</h3>
+              <p>Capacity: 600 Seats | Sound: Surround | Stage: Red Dot Circle</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 7: FAQ ACCORDION -->
+    <section id="faq" class="section-faq">
+      <div class="section-container">
+        
+        <div class="section-header-row">
+          <div>
+            <span class="section-kicker">Frequent Queries</span>
+            <h2 class="section-heading">Frequent Queries.</h2>
+          </div>
+        </div>
+
+        <div class="faq-list">
+          
+          <div class="faq-row">
+            <button class="faq-btn" aria-expanded="false">
+              <span>What is TEDxMET Nashik?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-body">
+              <p>TEDxMET Nashik is an independently organized TED event operated under official license from TED, hosted at MET Bhujbal Knowledge City, Nashik.</p>
+            </div>
+          </div>
+
+          <div class="faq-row">
+            <button class="faq-btn" aria-expanded="false">
+              <span>Who can attend the event?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-body">
+              <p>Students, educators, professionals, innovators, and thinkers from across Nashik and India can apply to attend.</p>
+            </div>
+          </div>
+
+          <div class="faq-row">
+            <button class="faq-btn" aria-expanded="false">
+              <span>How do I nominate a speaker or book seats?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-body">
+              <p>Click any "Book Seats" button on this website. Registration for seats will open shortly.</p>
+            </div>
+          </div>
+
+          <div class="faq-row">
+            <button class="faq-btn" aria-expanded="false">
+              <span>When and where is the event?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-body">
+              <p>17 September 2026 at MET Bhujbal Knowledge City, Adgaon, Nashik, Maharashtra.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 8: CALL TO ACTION -->
+    <section id="cta" class="section-cta">
+      <div class="cta-box">
+        <span class="cta-tag">Book Seats</span>
+        <h2 class="cta-title">IDEAS SHAPE TOMORROW.<br><span class="text-red">RESERVE YOUR SEAT.</span></h2>
+        <p class="cta-desc">Be part of the inaugural TEDxMET Nashik stage experience on 17 September 2026.</p>
+        <button class="btn-solid-red btn-large js-book-btn">Book Seats</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      
+      <div class="footer-grid">
+        
+        <div class="f-col f-main">
+          <div class="f-logo">
+            <span class="text-red">TEDx</span>MET Nashik
+          </div>
+          <p class="f-sub">Ideas Worth Spreading. Independent TEDx event under official license.</p>
+          <p class="f-meta">MET BKC Nashik — 17 September 2026</p>
+        </div>
+
+        <div class="f-col">
+          <span class="f-title">Navigation</span>
+          <ul>
+            <li><a href="#theme">Theme</a></li>
+            <li><a href="#speakers">Speakers</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#venue">Venue</a></li>
+            <li><a href="#" class="js-book-btn">Book Seats</a></li>
+          </ul>
+        </div>
+
+        <div class="f-col">
+          <span class="f-title">Connect</span>
+          <ul>
+            <li><a href="https://www.instagram.com/tedxmetnashik/" target="_blank">Instagram</a></li>
+            <li><a href="https://www.linkedin.com/company/tedxmetnashik" target="_blank">LinkedIn</a></li>
+            <li><a href="https://x.com/tedxmetnashik" target="_blank">X (Twitter)</a></li>
+          </ul>
+        </div>
+
+        <div class="f-col">
+          <span class="f-title">Contact</span>
+          <a href="mailto:tedxmetnashik@bkc.met.edu" class="f-email">tedxmetnashik@bkc.met.edu</a>
+        </div>
+
+      </div>
+
+      <div class="footer-bar">
+        <span>© 2026 TEDxMET Nashik. Operated under official TED license.</span>
+        <span>TEDxMET Nashik 2026</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- BOOKING COMING SOON MODAL -->
+  <div id="booking-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close" aria-label="Close Modal">&times;</button>
+      <div class="modal-tag">TEDxMET NASHIK 2026</div>
+      <h3 class="modal-title">Booking Coming Soon</h3>
+      <p class="modal-desc">Ticket registrations for the inaugural edition of TEDxMET Nashik will open shortly. Stay tuned for early bird announcements!</p>
+      <button class="btn-solid-red modal-action-btn" id="modal-ok-btn">Got It</button>
+    </div>
   </div>
 
-  <div class="footer-copy">
-    © 2026 TEDxMET Nashik — Independently Organized TED Event
-  </div>
-
-</footer>
-
-<script src="script.js"></script>
+  <!-- Scripts: Three.js, Lenis, GSAP, ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
