@@ -332,4 +332,35 @@
       if (e.target === bookingModal) closeBookingModal();
     });
   }
+
+  // --- TEDx Video Playlist Switcher ---
+  const tedxVideos = [
+    { id: 'iCvmsMzlF7o', title: 'Do schools kill creativity? — Sir Ken Robinson' },
+    { id: '8jPQjjsBbJw', title: 'Inside the mind of a master procrastinator — Tim Urban' },
+    { id: 'X4Q7d0Ct3yk', title: 'The power of vulnerability — Brené Brown' },
+    { id: 'qp0HIF3sfI4', title: 'How to speak so that people want to listen — Julian Treasure' }
+  ];
+  let currentVideoIdx = 0;
+
+  const tedxPlayer = document.getElementById('tedx-player');
+  const videoTitle = document.getElementById('video-title');
+  const videoCounter = document.getElementById('video-counter');
+  const prevVideoBtn = document.getElementById('prev-video-btn');
+  const nextVideoBtn = document.getElementById('next-video-btn');
+
+  function updateVideo(index) {
+    if (!tedxPlayer || !videoTitle || !videoCounter) return;
+    currentVideoIdx = (index + tedxVideos.length) % tedxVideos.length;
+    const vid = tedxVideos[currentVideoIdx];
+    tedxPlayer.src = `https://www.youtube-nocookie.com/embed/${vid.id}?enablejsapi=1&rel=0`;
+    videoTitle.textContent = vid.title;
+    videoCounter.textContent = `0${currentVideoIdx + 1} / 0${tedxVideos.length}`;
+  }
+
+  if (prevVideoBtn) {
+    prevVideoBtn.addEventListener('click', () => updateVideo(currentVideoIdx - 1));
+  }
+  if (nextVideoBtn) {
+    nextVideoBtn.addEventListener('click', () => updateVideo(currentVideoIdx + 1));
+  }
 })();

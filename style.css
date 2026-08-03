@@ -426,22 +426,109 @@ main {
   flex-wrap: wrap;
 }
 
-/* 3D Target Anchor Box */
+/* 3D Target Anchor & TEDx Video Hub */
 .hero-target-box {
   position: relative;
-  height: 320px;
+  height: 340px;
   border: 1px solid var(--border-dark);
-  background-color: transparent;
+  background-color: var(--card-bg);
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: border-color 0.3s ease;
 }
 
-.target-label {
-  font-family: var(--font-body);
+.hero-target-box:hover {
+  border-color: var(--red);
+}
+
+.video-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-head);
   font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.video-box-tag {
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.video-box-counter {
   color: var(--gray);
+}
+
+.video-player-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: var(--black);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.video-player-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-box-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.video-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.video-title {
+  font-family: var(--font-body);
+  font-size: 12px;
   font-weight: 600;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.video-nav-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.video-nav-btn {
+  background-color: var(--black);
+  color: var(--white);
+  border: 1px solid var(--border-dark);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: var(--font-head);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.video-nav-btn:hover {
+  background-color: var(--red);
+  color: var(--white);
+  border-color: var(--red);
 }
 
 .hero-scroll-indicator {
