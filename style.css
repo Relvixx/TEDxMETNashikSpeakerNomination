@@ -427,108 +427,184 @@ main {
 }
 
 /* 3D Target Anchor & TEDx Video Hub */
+/* 3D Target Anchor & TEDx YouTube Channel Hub Card */
 .hero-target-box {
   position: relative;
-  height: 340px;
+  height: 330px;
   border: 1px solid var(--border-dark);
-  background-color: var(--card-bg);
+  background-color: #0d0d0d;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  transition: border-color 0.3s ease;
+  padding: 18px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.6);
+  transition: all 0.3s ease;
 }
 
 .hero-target-box:hover {
   border-color: var(--red);
+  box-shadow: 0 14px 40px rgba(235,0,40,0.15);
 }
 
-.video-box-header {
+.channel-card-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.channel-brand-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-head);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
-}
-
-.video-box-tag {
-  color: var(--white);
-  text-transform: uppercase;
-}
-
-.video-box-counter {
-  color: var(--gray);
-}
-
-.video-player-wrap {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  background-color: var(--black);
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.video-player-wrap iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.video-box-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  margin-top: 10px;
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
 }
 
-.video-info {
-  flex: 1;
-  overflow: hidden;
-}
-
-.video-title {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
+.channel-badge {
+  background-color: var(--red);
   color: var(--white);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 6px 10px;
+  letter-spacing: -0.02em;
+  border-radius: 2px;
 }
 
-.video-nav-btns {
+.channel-title-group {
   display: flex;
+  flex-direction: column;
+}
+
+.channel-name-wrap {
+  display: flex;
+  align-items: center;
   gap: 6px;
 }
 
-.video-nav-btn {
-  background-color: var(--black);
-  color: var(--white);
-  border: 1px solid var(--border-dark);
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+.channel-name {
   font-family: var(--font-head);
-  font-size: 14px;
-  transition: all 0.2s ease;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.01em;
 }
 
-.video-nav-btn:hover {
+.verified-badge {
+  background-color: #388e3c;
+  color: #fff;
+  font-size: 9px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.channel-handle {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+.channel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.channel-description {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #b0b0b0;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.channel-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background-color: rgba(255,255,255,0.03);
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.channel-stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.stat-lbl {
+  font-family: var(--font-body);
+  font-size: 9px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.channel-tags-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.channel-pill {
+  font-family: var(--font-body);
+  font-size: 10px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-dark);
+  color: var(--gray);
+  white-space: nowrap;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.channel-pill.active {
+  background-color: rgba(235, 0, 40, 0.15);
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.channel-action-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.btn-channel-launch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: var(--red);
   color: var(--white);
-  border-color: var(--red);
+  padding: 10px 14px;
+  text-decoration: none;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.btn-channel-launch:hover {
+  background-color: #c40022;
+}
+
+.launch-icon {
+  font-size: 14px;
 }
 
 .hero-scroll-indicator {
