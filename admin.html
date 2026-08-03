@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEDxMET Nashik — Admin Dashboard</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Internal admin dashboard for TEDxMET Nashik 2026 Speaker Nominations." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   TEDxMET Nashik — Admin Dashboard
+   All styles self-contained
+   ========================================================= */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Core — from public site */
+  --red:        #E62B1E;
+  --red-dark:   #C42116;
+  --black:      #0D0D0D;
+  --white:      #F0EDE8;
+  --gray:       #878787;
+  --line:       rgba(255, 255, 255, 0.08);
+
+  /* Dashboard surfaces (dark theme layering) */
+  --bg-page:    #080808;
+  --bg-card:    #0D0D0D;
+  --bg-card-2:  #141414;
+  --bg-card-3:  #1A1A1A;
+  --border-1:   #1A1A1A;
+  --border-2:   #222222;
+
+  /* Text */
+  --text-primary:   #F0EDE8;
+  --text-secondary: #878787;
+  --text-muted:     #444444;
+
+  /* Status badge colors */
+  --status-pending:    rgba(230, 43, 30, 0.15);
+  --status-pending-t:  #E62B1E;
+  --status-review:     rgba(180, 120, 0, 0.18);
+  --status-review-t:   #C49A00;
+  --status-short:      rgba(39, 133, 90, 0.18);
+  --status-short-t:    #27855A;
+  --status-reject:     rgba(135, 135, 135, 0.15);
+  --status-reject-t:   #878787;
+
+  /* Animation */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dot-grid background texture (from public site) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Typography helpers */
+.font-display {
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+}
+
+.font-body {
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+.section-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   LOGIN SCREEN
+   ========================================================= */
+
+#login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-page);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+#login-screen.hidden {
+  display: none;
+}
+
+.login-bar {
+  height: 4px;
+  background: var(--red);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.login-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 80px;
+}
+
+.login-left {
+  max-width: 420px;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.login-brand-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--red);
+  letter-spacing: 1px;
+}
+
+.login-brand-meta {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.login-divider {
+  width: 48px;
+  height: 2px;
+  background: var(--red);
+  margin: 32px 0;
+}
+
+.login-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 64px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.login-desc {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.4);
+  max-width: 340px;
+}
+
+.login-right {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-form-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.login-input-wrap {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+#admin-pw {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  padding: 12px 0;
+  outline: none;
+  transition: border-color 0.3s var(--ease-out);
+}
+
+#admin-pw:focus {
+  border-bottom-color: var(--red);
+}
+
+#admin-pw::placeholder {
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.login-submit {
+  width: 100%;
+  background: var(--red);
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.25s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.login-submit:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(230, 43, 30, 0.25);
+}
+
+.login-submit:active {
+  transform: translateY(0);
+}
+
+.login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.login-spinner {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.login-submit.verifying .login-spinner {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.login-error {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--red);
+  min-height: 20px;
+  transition: opacity 0.3s;
+}
+
+.login-error:empty {
+  opacity: 0;
+}
+
+.login-lockout {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  min-height: 16px;
+}
+
+.login-attempts {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   DASHBOARD NAV
+   ========================================================= */
+
+#dashboard-screen {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+#dashboard-screen.active {
+  display: block;
+}
+
+.dash-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  padding: 0 36px;
+  background: rgba(13, 13, 13, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 500;
+}
+
+.dash-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dash-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--red);
+  letter-spacing: 1px;
+}
+
+.dash-meta {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+  color: var(--white);
+}
+
+.dash-nav-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+.live-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.dash-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ghost-btn {
+  background: transparent;
+  border: 1px solid var(--border-2);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+  border-radius: 2px;
+}
+
+.ghost-btn:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.ghost-btn-danger:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.dash-main {
+  padding: 88px 36px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   BENTO STATS GRID
+   ========================================================= */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto auto;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.bento-card {
+  background: rgba(20, 20, 20, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s var(--ease-out);
+}
+
+.bento-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.bento-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.bento-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  line-height: 1;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.bento-number.primary {
+  font-size: 64px;
+  color: var(--red);
+}
+
+.bento-sub {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-secondary);
+}
+
+/* Sparkline card */
+.bento-sparkline {
+  grid-column: 1 / 4;
+  padding: 20px 24px;
+}
+
+.bento-sparkline .bento-label {
+  margin-bottom: 8px;
+}
+
+.sparkline-wrap {
+  height: 80px;
+  position: relative;
+}
+
+.sparkline-wrap canvas {
+  width: 100% !important;
+  height: 80px !important;
+}
+
+/* Deadline card */
+.bento-deadline {
+  grid-column: 4 / 5;
+}
+
+/* Pending card */
+.bento-pending {
+  grid-column: 1 / 3;
+}
+
+/* =========================================================
+   FILTER BAR
+   ========================================================= */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-tab {
+  background: transparent;
+  border: 1px solid var(--border-1);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.25s var(--ease-out);
+}
+
+.filter-tab:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.filter-tab.active {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+}
+
+.filter-spacer {
+  flex: 1;
+}
+
+.search-wrap {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+#search-input {
+  background: var(--bg-card);
+  border: 1px solid var(--border-1);
+  color: var(--text-primary);
+  padding: 8px 12px 8px 32px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 12px;
+  border-radius: 6px;
+  outline: none;
+  width: 240px;
+  transition: border-color 0.3s;
+}
+
+#search-input:focus {
+  border-color: var(--border-2);
+}
+
+#search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   NOMINATIONS TABLE
+   ========================================================= */
+
+.table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border-1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.nom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nom-table thead {
+  background: var(--bg-card-2);
+}
+
+.nom-table th {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nom-table th:hover {
+  color: var(--text-secondary);
+}
+
+.sort-indicator {
+  margin-left: 4px;
+  font-size: 8px;
+  opacity: 0.5;
+}
+
+.nom-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-1);
+  vertical-align: middle;
+}
+
+.nom-row {
+  cursor: pointer;
+  transition: background 0.25s ease, border-left-color 0.25s ease;
+  border-left: 2px solid transparent;
+}
+
+.nom-row:hover {
+  background: rgba(230, 43, 30, 0.04);
+  border-left-color: var(--red);
+}
+
+.nom-row.selected {
+  background: rgba(230, 43, 30, 0.07);
+  border-left-color: var(--red);
+}
+
+.nom-row:last-child td {
+  border-bottom: none;
+}
+
+.nom-row td:first-child {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.idea-truncated {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(100, 150, 255, 0.1);
+  color: #6496FF;
+}
+
+.docs-none {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3px 9px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.badge-pending {
+  background: rgba(230, 43, 30, 0.15);
+  color: #E62B1E;
+}
+
+.badge-review {
+  background: rgba(180, 156, 0, 0.18);
+  color: #C49A00;
+}
+
+.badge-shortlisted {
+  background: rgba(39, 133, 90, 0.18);
+  color: #27855A;
+}
+
+.badge-rejected {
+  background: rgba(135, 135, 135, 0.15);
+  color: #878787;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-1);
+  background: var(--bg-card);
+}
+
+.pagination-info {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.pagination-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.page-btn {
+  background: transparent;
+  border: 1px solid var(--border-1);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Empty / Error states */
+.table-empty, .table-error {
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.table-empty-icon, .table-error-icon {
+  font-size: 36px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.table-empty-text, .table-error-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.table-error-text {
+  color: var(--red);
+}
+
+.retry-btn {
+  margin-top: 16px;
+  background: var(--red);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.retry-btn:hover {
+  background: var(--red-dark);
+}
+
+/* Loading state */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px;
+  gap: 20px;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-2);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+/* =========================================================
+   DETAIL PANEL (slide-in from right)
+   ========================================================= */
+
+.panel-overlay {
+  position: fixed;
+  inset: 64px 420px 0 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 199;
+}
+
+.panel-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.detail-panel {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  width: 420px;
+  height: calc(100vh - 64px);
+  background: rgba(14, 14, 14, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid var(--border-1);
+  transform: translateX(100%);
+  transition: transform 0.5s var(--ease-out);
+  overflow-y: auto;
+  z-index: 200;
+}
+
+.detail-panel.open {
+  transform: translateX(0);
+}
+
+.detail-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.detail-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detail-panel::-webkit-scrollbar-thumb {
+  background: var(--border-2);
+  border-radius: 2px;
+}
+
+.panel-header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.panel-header-left {}
+
+.panel-header-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+
+.panel-header-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.panel-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.panel-close:hover {
+  color: var(--text-primary);
+}
+
+.panel-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+}
+
+.panel-speaker-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.panel-linkedin {
+  font-size: 12px;
+  color: #6496FF;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.panel-linkedin:hover {
+  opacity: 0.8;
+}
+
+/* Status control */
+.panel-status-current {
+  margin-bottom: 12px;
+}
+
+.panel-status-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.status-action-btn {
+  background: transparent;
+  border: 1px solid var(--border-1);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.25s var(--ease-out);
+}
+
+.status-action-btn:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.status-action-btn.active-pending {
+  background: var(--status-pending);
+  border-color: var(--status-pending-t);
+  color: var(--status-pending-t);
+}
+
+.status-action-btn.active-review {
+  background: var(--status-review);
+  border-color: var(--status-review-t);
+  color: var(--status-review-t);
+}
+
+.status-action-btn.active-shortlisted {
+  background: var(--status-short);
+  border-color: var(--status-short-t);
+  color: var(--status-short-t);
+}
+
+.status-action-btn.active-rejected {
+  background: var(--status-reject);
+  border-color: var(--status-reject-t);
+  color: var(--status-reject-t);
+}
+
+.panel-section-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.panel-text {
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.7;
+  color: rgba(240, 237, 232, 0.75);
+}
+
+.panel-nominator-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.panel-nominator-email {
+  font-size: 12px;
+  color: #6496FF;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.panel-nominator-email:hover {
+  opacity: 0.8;
+}
+
+.panel-nominator-phone {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* File links */
+.panel-file-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 12px;
+  color: #6496FF;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border: none;
+  background: none;
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+.panel-file-link:hover {
+  opacity: 0.8;
+}
+
+.panel-file-icon {
+  font-size: 14px;
+}
+
+.panel-file-error {
+  font-size: 11px;
+  color: var(--red);
+  padding: 4px 0;
+}
+
+.panel-no-docs {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Notes textarea */
+.notes-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-1);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 8px 0;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  line-height: 1.6;
+  transition: border-color 0.3s;
+}
+
+.notes-textarea:focus {
+  border-bottom-color: var(--border-2);
+}
+
+.notes-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(4px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.save-indicator {
+  animation: fadeInOut 2s ease forwards;
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.save-indicator.success {
+  color: #27855A;
+}
+
+.save-indicator.error {
+  color: var(--red);
+}
+
+/* =========================================================
+   TOAST NOTIFICATIONS
+   ========================================================= */
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-card-2);
+  border: 1px solid var(--border-1);
+  border-left: 3px solid var(--red);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 420px;
+  z-index: 10000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out), opacity 0.4s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.toast.success .toast-icon {
+  color: #27855A;
+}
+
+.toast.error .toast-icon {
+  color: var(--red);
+}
+
+.toast-body {
+  flex: 1;
+}
+
+.toast-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.toast-msg {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-sparkline {
+    grid-column: 1 / 3;
+  }
+
+  .bento-pending {
+    grid-column: 1 / 2;
+  }
+
+  .bento-deadline {
+    grid-column: 2 / 3;
+  }
+
+  .detail-panel {
+    width: 360px;
+  }
+
+  .panel-overlay {
+    inset: 64px 360px 0 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-main {
+    flex-direction: column;
+    gap: 48px;
+    padding: 40px 24px;
+  }
+
+  .login-right {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .dash-nav {
+    padding: 0 16px;
+  }
+
+  .dash-main {
+    padding: 80px 16px 40px;
+  }
+
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bento-sparkline {
+    grid-column: 1 / 3;
+  }
+
+  .bento-pending {
+    grid-column: 1 / 3;
+  }
+
+  .bento-deadline {
+    grid-column: 1 / 3;
+  }
+
+  .nom-table {
+    font-size: 12px;
+  }
+
+  .detail-panel {
+    width: 100%;
+  }
+
+  .panel-overlay {
+    inset: 64px 0 0 0;
+  }
+
+  .filter-bar {
+    gap: 6px;
+  }
+
+  #search-input {
+    width: 160px;
+  }
+
+  .dash-nav-center {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-sparkline,
+  .bento-pending,
+  .bento-deadline {
+    grid-column: 1 / 2;
+  }
+
+  .filter-tabs {
+    flex-wrap: wrap;
+  }
+
+  #search-input {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==========================================
+     LOGIN SCREEN
+     ========================================== -->
+
+<div id="login-screen">
+  <div class="login-bar"></div>
+
+  <div class="login-main">
+    <div class="login-left">
+      <div class="login-brand">
+        <span class="login-brand-logo">TEDx</span>
+        <div class="login-brand-meta">
+          MET Nashik<br>Admin Access
+        </div>
+      </div>
+
+      <div class="login-divider" aria-hidden="true"></div>
+
+      <h1 class="login-heading">Dashboard<br>Login</h1>
+
+      <p class="login-desc">
+        Internal operations portal for the TEDxMET Nashik 2026
+        speaker nomination review team.
+      </p>
+    </div>
+
+    <div class="login-right">
+      <form id="login-form" action="#" onsubmit="return false">
+        <label for="admin-pw" class="login-form-label">Password</label>
+        <div class="login-input-wrap">
+          <input
+            type="password"
+            id="admin-pw"
+            name="admin-pw"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        <button type="submit" id="login-btn" class="login-submit">
+          <span id="login-btn-text">Authenticate</span>
+          <span class="login-spinner" aria-hidden="true"></span>
+        </button>
+        <div id="login-error" class="login-error" role="alert"></div>
+        <div id="login-attempts" class="login-attempts" aria-live="polite"></div>
+        <div id="login-lockout" class="login-lockout" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="login-bar"></div>
+</div>
+
+<!-- ==========================================
+     DASHBOARD SCREEN
+     ========================================== -->
+
+<div id="dashboard-screen">
+
+  <!-- NAV -->
+  <nav class="dash-nav" role="navigation" aria-label="Dashboard navigation">
+    <div class="dash-nav-left">
+      <span class="dash-logo">TEDx</span>
+      <div class="dash-meta">
+        MET Nashik<br>2026
+      </div>
+    </div>
+
+    <div class="dash-nav-center">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span class="live-label">Live</span>
+    </div>
+
+    <div class="dash-nav-right">
+      <button type="button" id="nav-export-btn" class="ghost-btn" aria-label="Export nominations as CSV">
+        Export CSV
+      </button>
+      <button type="button" id="nav-logout-btn" class="ghost-btn ghost-btn-danger" aria-label="Log out">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="dash-main" id="dash-content" role="main">
+    <!-- Content injected by JS -->
+  </main>
+
+  <!-- DETAIL PANEL OVERLAY -->
+  <div class="panel-overlay" id="panel-overlay" aria-hidden="true"></div>
+
+  <!-- DETAIL PANEL -->
+  <aside class="detail-panel" id="detail-panel" role="complementary" aria-label="Nomination details">
+    <div id="panel-content">
+      <!-- Content injected by JS -->
+    </div>
+  </aside>
+
+</div>
+
+<!-- CDN Scripts -->
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+<script>
+/* =========================================================
+   TEDxMET Nashik — Admin Dashboard
+   All JavaScript self-contained — IIFE pattern
+   ========================================================= */
+
+(function() {
+  'use strict';
+
+  // ——————————————————————————————————————————
+  // MODULE STATE
+  // ——————————————————————————————————————————
+
+  let supabaseClient = null;
+  let realtimeChannel = null;
+  let allNominations = [];
+  let filteredNominations = [];
+  let currentFilter = 'all';
+  let currentSearch = '';
+  let currentSort = { column: 'created_at', direction: 'desc' };
+  let currentPage = 1;
+  let selectedNominationId = null;
+  let sparklineChart = null;
+
+  const ROWS_PER_PAGE = 25;
+  const SESSION_KEY = 'tedx_admin_session';
+  const LOCKOUT_KEY = 'tedx_admin_lockout';
+  const MAX_ATTEMPTS = 5;
+  const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
+  const SESSION_DURATION = 8 * 60 * 60 * 1000; // 8 hours
+  const DEADLINE_DATE = new Date('2026-07-20T23:59:59+05:30');
+
+  const STATUS_MAP = {
+    pending: { label: 'Pending', badge: 'badge-pending', activeClass: 'active-pending' },
+    under_review: { label: 'Under Review', badge: 'badge-review', activeClass: 'active-review' },
+    shortlisted: { label: 'Shortlisted', badge: 'badge-shortlisted', activeClass: 'active-shortlisted' },
+    rejected: { label: 'Rejected', badge: 'badge-rejected', activeClass: 'active-rejected' }
+  };
+
+  // ——————————————————————————————————————————
+  // UTILITY FUNCTIONS
+  // ——————————————————————————————————————————
+
+  /**
+   * Format a timestamp into a readable date string.
+   * @param {string} ts - ISO timestamp
+   * @returns {string} Formatted date
+   */
+  function formatDate(ts) {
+    if (!ts) return '—';
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+  }
+
+  /**
+   * Format a timestamp into a readable date + time string.
+   * @param {string} ts - ISO timestamp
+   * @returns {string} Formatted date and time
+   */
+  function formatDateTime(ts) {
+    if (!ts) return '—';
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: true
+    });
+  }
+
+  /**
+   * Truncate text to a maximum length with ellipsis.
+   * @param {string} text - Text to truncate
+   * @param {number} max - Maximum characters
+   * @returns {string} Truncated text
+   */
+  function truncate(text, max) {
+    if (!text) return '—';
+    return text.length > max ? text.substring(0, max) + '…' : text;
+  }
+
+  /**
+   * Escape HTML entities to prevent XSS.
+   * @param {string} str - Raw string
+   * @returns {string} Escaped string
+   */
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  /**
+   * Compute SHA-256 hash of a string using Web Crypto API.
+   * @param {string} message - Plain text to hash
+   * @returns {Promise<string>} Hex-encoded hash
+   */
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  /**
+   * Animate a counter element from start to end with ease-out cubic.
+   * @param {HTMLElement} el - Element whose textContent to update
+   * @param {number} start - Start value
+   * @param {number} end - End value
+   * @param {number} duration - Animation duration in ms
+   */
+  function animateCounter(el, start, end, duration) {
+    const startTime = performance.now();
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(start + (end - start) * eased);
+      el.textContent = String(current).padStart(2, '0');
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  /**
+   * Show a toast notification.
+   * @param {string} type - 'success' or 'error'
+   * @param {string} title - Toast title
+   * @param {string} message - Toast message
+   */
+  function showToast(type, title, message) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
+      <div class="toast-body">
+        <div class="toast-title">${escapeHtml(title)}</div>
+        <div class="toast-msg">${escapeHtml(message)}</div>
+      </div>
+    `;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        toast.classList.add('show');
+      });
+    });
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 500);
+    }, 5000);
+  }
+
+  /**
+   * Get the status badge HTML for a nomination status.
+   * @param {string} status - Status key
+   * @returns {string} HTML string
+   */
+  function getStatusBadgeHtml(status) {
+    const s = STATUS_MAP[status] || STATUS_MAP.pending;
+    return `<span class="status-badge ${s.badge}">${escapeHtml(s.label)}</span>`;
+  }
+
+  /**
+   * Count files from file_names string.
+   * @param {string} fileNames - Comma-separated file names
+   * @returns {number} Count
+   */
+  function countFiles(fileNames) {
+    if (!fileNames || !fileNames.trim()) return 0;
+    return fileNames.split(',').filter(f => f.trim()).length;
+  }
+
+  // ——————————————————————————————————————————
+  // AUTH SYSTEM
+  // ——————————————————————————————————————————
+
+  /**
+   * Check if a valid session exists in sessionStorage.
+   * @returns {boolean} Whether session is valid
+   */
+  function hasValidSession() {
+    try {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return false;
+      const session = JSON.parse(raw);
+      if (!session.authenticated || !session.expires) return false;
+      if (Date.now() > session.expires) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return false;
+      }
+      return true;
+    } catch {
+      sessionStorage.removeItem(SESSION_KEY);
+      return false;
+    }
+  }
+
+  /**
+   * Create a new session after successful login.
+   */
+  function createSession() {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      authenticated: true,
+      loginTime: Date.now(),
+      expires: Date.now() + SESSION_DURATION
+    }));
+  }
+
+  /**
+   * Destroy the current session and clean up.
+   */
+  function destroySession() {
+    sessionStorage.removeItem(SESSION_KEY);
+    if (realtimeChannel && supabaseClient) {
+      supabaseClient.removeChannel(realtimeChannel);
+      realtimeChannel = null;
+    }
+    allNominations = [];
+    filteredNominations = [];
+    selectedNominationId = null;
+    if (sparklineChart) {
+      sparklineChart.destroy();
+      sparklineChart = null;
+    }
+  }
+
+  /**
+   * Get the lockout state from localStorage.
+   * @returns {{ attempts: number, lockedUntil: number }} Lockout state
+   */
+  function getLockout() {
+    try {
+      const raw = localStorage.getItem(LOCKOUT_KEY);
+      if (!raw) return { attempts: 0, lockedUntil: 0 };
+      return JSON.parse(raw);
+    } catch {
+      return { attempts: 0, lockedUntil: 0 };
+    }
+  }
+
+  /**
+   * Save lockout state to localStorage.
+   * @param {{ attempts: number, lockedUntil: number }} state
+   */
+  function saveLockout(state) {
+    localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state));
+  }
+
+  /**
+   * Check if login is currently locked out.
+   * @returns {boolean}
+   */
+  function isLockedOut() {
+    const lockout = getLockout();
+    if (lockout.lockedUntil && Date.now() < lockout.lockedUntil) return true;
+    if (lockout.lockedUntil && Date.now() >= lockout.lockedUntil) {
+      saveLockout({ attempts: 0, lockedUntil: 0 });
+      return false;
+    }
+    return false;
+  }
+
+  // ——————————————————————————————————————————
+  // LOGIN SCREEN
+  // ——————————————————————————————————————————
+
+  let lockoutInterval = null;
+
+  /**
+   * Initialize the login screen and bind events.
+   */
+  function initLogin() {
+    const loginScreen = document.getElementById('login-screen');
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const loginBtnText = document.getElementById('login-btn-text');
+    const pwInput = document.getElementById('admin-pw');
+    const errorEl = document.getElementById('login-error');
+    const attemptsEl = document.getElementById('login-attempts');
+    const lockoutEl = document.getElementById('login-lockout');
+
+    loginScreen.classList.remove('hidden');
+    document.getElementById('dashboard-screen').classList.remove('active');
+
+    // Show lockout state if active
+    updateLockoutUI();
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (isLockedOut()) {
+        updateLockoutUI();
+        return;
+      }
+
+      const password = pwInput.value;
+      if (!password) {
+        errorEl.textContent = 'Please enter a password';
+        return;
+      }
+
+      // Verify
+      loginBtn.classList.add('verifying');
+      loginBtnText.textContent = 'Verifying...';
+      loginBtn.disabled = true;
+      errorEl.textContent = '';
+
+      try {
+        const hash = await sha256(password);
+        const expected = window.CONFIG?.ADMIN_PASSWORD_HASH;
+
+        if (!expected) {
+          errorEl.textContent = 'Admin password hash not configured. Check config.js';
+          return;
+        }
+
+        if (hash === expected) {
+          // Success
+          saveLockout({ attempts: 0, lockedUntil: 0 });
+          createSession();
+          loginScreen.classList.add('hidden');
+          pwInput.value = '';
+          attemptsEl.textContent = '';
+          initDashboard();
+        } else {
+          // Failed
+          const lockout = getLockout();
+          const newAttempts = lockout.attempts + 1;
+
+          if (newAttempts >= MAX_ATTEMPTS) {
+            saveLockout({ attempts: newAttempts, lockedUntil: Date.now() + LOCKOUT_DURATION });
+            errorEl.textContent = 'Too many failed attempts';
+            updateLockoutUI();
+          } else {
+            saveLockout({ attempts: newAttempts, lockedUntil: 0 });
+            errorEl.textContent = 'Invalid password';
+            const remaining = MAX_ATTEMPTS - newAttempts;
+            attemptsEl.textContent = `${remaining} attempt${remaining !== 1 ? 's' : ''} remaining`;
+          }
+          pwInput.value = '';
+          pwInput.focus();
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        errorEl.textContent = 'Verification failed. Please try again.';
+      } finally {
+        loginBtn.classList.remove('verifying');
+        loginBtnText.textContent = 'Authenticate';
+        loginBtn.disabled = false;
+      }
+    });
+  }
+
+  /**
+   * Update the lockout countdown UI.
+   */
+  function updateLockoutUI() {
+    const lockoutEl = document.getElementById('login-lockout');
+    const loginBtn = document.getElementById('login-btn');
+    const attemptsEl = document.getElementById('login-attempts');
+
+    if (lockoutInterval) {
+      clearInterval(lockoutInterval);
+      lockoutInterval = null;
+    }
+
+    const lockout = getLockout();
+    if (lockout.lockedUntil && Date.now() < lockout.lockedUntil) {
+      loginBtn.disabled = true;
+      attemptsEl.textContent = '';
+
+      function updateTimer() {
+        const remaining = lockout.lockedUntil - Date.now();
+        if (remaining <= 0) {
+          saveLockout({ attempts: 0, lockedUntil: 0 });
+          lockoutEl.textContent = '';
+          loginBtn.disabled = false;
+          if (lockoutInterval) clearInterval(lockoutInterval);
+          return;
+        }
+        const mins = Math.floor(remaining / 60000);
+        const secs = Math.floor((remaining % 60000) / 1000);
+        lockoutEl.textContent = `Locked for ${mins}:${String(secs).padStart(2, '0')}`;
+      }
+      updateTimer();
+      lockoutInterval = setInterval(updateTimer, 1000);
+    } else {
+      lockoutEl.textContent = '';
+      loginBtn.disabled = false;
+    }
+  }
+
+  // ——————————————————————————————————————————
+  // DASHBOARD
+  // ——————————————————————————————————————————
+
+  /**
+   * Initialize the dashboard: Supabase client, fetch data, render UI, subscribe Realtime.
+   */
+  async function initDashboard() {
+    const dashScreen = document.getElementById('dashboard-screen');
+    dashScreen.classList.add('active');
+
+    const content = document.getElementById('dash-content');
+    content.innerHTML = `
+      <div class="loading-screen" id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading nominations...</div>
+      </div>
+    `;
+
+    // Init Supabase
+    try {
+      const url = window.CONFIG?.SUPABASE_URL;
+      const anon = window.CONFIG?.SUPABASE_ANON;
+      if (!url || !anon) throw new Error('Supabase credentials missing in config.js');
+      supabaseClient = window.supabase.createClient(url, anon);
+    } catch (err) {
+      console.error('Supabase init error:', err);
+      renderError('Could not initialize Supabase. Check your config.js file.');
+      return;
+    }
+
+    // Fetch data
+    try {
+      const { data, error } = await supabaseClient
+        .from('nominations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      allNominations = data || [];
+      renderDashboardUI();
+      subscribeRealtime();
+    } catch (err) {
+      console.error('Fetch error:', err);
+      renderError('Could not load nominations. Check your Supabase connection.');
+    }
+
+    // Nav events
+    document.getElementById('nav-export-btn').addEventListener('click', () => {
+      exportCSV(filteredNominations);
+    });
+
+    document.getElementById('nav-logout-btn').addEventListener('click', () => {
+      destroySession();
+      dashScreen.classList.remove('active');
+      document.getElementById('login-screen').classList.remove('hidden');
+      updateLockoutUI();
+    });
+  }
+
+  /**
+   * Render an error state in the main content area.
+   * @param {string} message - Error message to display
+   */
+  function renderError(message) {
+    const content = document.getElementById('dash-content');
+    content.innerHTML = `
+      <div class="table-error">
+        <div class="table-error-icon">⚠</div>
+        <div class="table-error-text">${escapeHtml(message)}</div>
+        <button class="retry-btn" id="retry-btn" type="button">Retry</button>
+      </div>
+    `;
+    document.getElementById('retry-btn').addEventListener('click', () => {
+      initDashboard();
+    });
+  }
+
+  /**
+   * Render the full dashboard UI: stats, filter bar, table, and set up events.
+   */
+  function renderDashboardUI() {
+    const content = document.getElementById('dash-content');
+
+    // Compute stats
+    const total = allNominations.length;
+    const today = allNominations.filter(n => {
+      const d = new Date(n.created_at);
+      const now = new Date();
+      return d.toDateString() === now.toDateString();
+    }).length;
+    const shortlisted = allNominations.filter(n => n.status === 'shortlisted').length;
+    const withDocs = allNominations.filter(n => n.file_names && n.file_names.trim()).length;
+    const pending = allNominations.filter(n => !n.status || n.status === 'pending').length;
+    const daysLeft = Math.max(0, Math.ceil((DEADLINE_DATE - new Date()) / (1000 * 60 * 60 * 24)));
+
+    content.innerHTML = `
+      <!-- BENTO STATS -->
+      <section class="bento-grid" aria-label="Statistics overview">
+        <div class="bento-card">
+          <div class="bento-label">Total Nominations</div>
+          <div class="bento-number primary" id="stat-total">00</div>
+          <div class="bento-sub">all time</div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-label">Today</div>
+          <div class="bento-number" id="stat-today">00</div>
+          <div class="bento-sub">new today</div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-label">Shortlisted</div>
+          <div class="bento-number" id="stat-shortlisted">00</div>
+          <div class="bento-sub">speakers</div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-label">With Documents</div>
+          <div class="bento-number" id="stat-docs">00</div>
+          <div class="bento-sub">supporting files</div>
+        </div>
+        <div class="bento-card bento-sparkline">
+          <div class="bento-label">Submissions Trend — Last 14 Days</div>
+          <div class="sparkline-wrap">
+            <canvas id="sparkline-canvas"></canvas>
+          </div>
+        </div>
+        <div class="bento-card bento-pending">
+          <div class="bento-label">Pending Review</div>
+          <div class="bento-number" id="stat-pending">00</div>
+          <div class="bento-sub">needs action</div>
+        </div>
+        <div class="bento-card bento-deadline">
+          <div class="bento-label">Deadline</div>
+          <div class="bento-number" style="font-size:36px; letter-spacing:1px;">JULY 20</div>
+          <div class="bento-sub" id="stat-days-left">${daysLeft} days left</div>
+        </div>
+      </section>
+
+      <!-- FILTER BAR -->
+      <section class="filter-bar" aria-label="Nomination filters">
+        <div class="filter-tabs" role="tablist">
+          <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter-tab" data-filter="pending" role="tab" aria-selected="false">Pending</button>
+          <button class="filter-tab" data-filter="under_review" role="tab" aria-selected="false">Under Review</button>
+          <button class="filter-tab" data-filter="shortlisted" role="tab" aria-selected="false">Shortlisted</button>
+          <button class="filter-tab" data-filter="rejected" role="tab" aria-selected="false">Rejected</button>
+        </div>
+        <div class="filter-spacer"></div>
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input type="text" id="search-input" placeholder="Search nominations..." aria-label="Search nominations" />
+        </div>
+        <button type="button" class="ghost-btn" id="table-export-btn" aria-label="Export filtered nominations as CSV">Export CSV ↓</button>
+      </section>
+
+      <!-- TABLE -->
+      <section class="table-wrap" aria-label="Nominations table">
+        <table class="nom-table" role="grid">
+          <thead>
+            <tr>
+              <th data-sort="row_num" scope="col">#</th>
+              <th data-sort="first_name" scope="col">Nominator <span class="sort-indicator"></span></th>
+              <th data-sort="speaker_name" scope="col">Speaker <span class="sort-indicator"></span></th>
+              <th data-sort="core_idea" scope="col">Idea <span class="sort-indicator"></span></th>
+              <th data-sort="created_at" scope="col">Submitted <span class="sort-indicator"></span></th>
+              <th scope="col">Docs</th>
+              <th data-sort="status" scope="col">Status <span class="sort-indicator"></span></th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+          </tbody>
+        </table>
+        <div class="pagination" id="pagination">
+          <div class="pagination-info" id="pagination-info"></div>
+          <div class="pagination-btns">
+            <button class="page-btn" id="prev-page" type="button" aria-label="Previous page">← Previous</button>
+            <button class="page-btn" id="next-page" type="button" aria-label="Next page">Next →</button>
+          </div>
+        </div>
+      </section>
+    `;
+
+    // Animate stats
+    setTimeout(() => {
+      animateCounter(document.getElementById('stat-total'), 0, total, 1200);
+      animateCounter(document.getElementById('stat-today'), 0, today, 1200);
+      animateCounter(document.getElementById('stat-shortlisted'), 0, shortlisted, 1200);
+      animateCounter(document.getElementById('stat-docs'), 0, withDocs, 1200);
+      animateCounter(document.getElementById('stat-pending'), 0, pending, 1200);
+    }, 100);
+
+    // Render sparkline
+    renderSparkline();
+
+    // Apply filters and render table
+    applyFiltersAndRender();
+
+    // Bind filter tab events
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        currentFilter = tab.dataset.filter;
+        currentPage = 1;
+        applyFiltersAndRender();
+      });
+    });
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      currentSearch = e.target.value.trim().toLowerCase();
+      currentPage = 1;
+      applyFiltersAndRender();
+    });
+
+    // Sort
+    document.querySelectorAll('.nom-table th[data-sort]').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.sort;
+        if (col === 'row_num') return;
+        if (currentSort.column === col) {
+          currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSort.column = col;
+          currentSort.direction = 'asc';
+        }
+        currentPage = 1;
+        applyFiltersAndRender();
+      });
+    });
+
+    // Pagination
+    document.getElementById('prev-page').addEventListener('click', () => {
+      if (currentPage > 1) { currentPage--; renderTable(); }
+    });
+    document.getElementById('next-page').addEventListener('click', () => {
+      const maxPage = Math.ceil(filteredNominations.length / ROWS_PER_PAGE);
+      if (currentPage < maxPage) { currentPage++; renderTable(); }
+    });
+
+    // Table export
+    document.getElementById('table-export-btn').addEventListener('click', () => {
+      exportCSV(filteredNominations);
+    });
+
+    // Panel overlay close
+    document.getElementById('panel-overlay').addEventListener('click', closePanel);
+  }
+
+  /**
+   * Render the Chart.js sparkline bar chart showing last 14 days of submissions.
+   */
+  function renderSparkline() {
+    const canvas = document.getElementById('sparkline-canvas');
+    if (!canvas) return;
+
+    // Build last 14 days
+    const days = [];
+    const counts = [];
+    const now = new Date();
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().split('T')[0];
+      days.push(key);
+      counts.push(0);
+    }
+
+    allNominations.forEach(n => {
+      if (!n.created_at) return;
+      const dateKey = new Date(n.created_at).toISOString().split('T')[0];
+      const idx = days.indexOf(dateKey);
+      if (idx !== -1) counts[idx]++;
+    });
+
+    const barColors = counts.map((_, i) =>
+      i >= 11 ? '#E62B1E' : 'rgba(135,135,135,0.3)'
+    );
+
+    if (sparklineChart) sparklineChart.destroy();
+
+    sparklineChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: days,
+        datasets: [{
+          data: counts,
+          backgroundColor: barColors,
+          borderRadius: 3,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: false },
+          tooltip: {
+            backgroundColor: '#1A1A1A',
+            titleColor: '#F0EDE8',
+            bodyColor: '#878787',
+            borderColor: '#222',
+            borderWidth: 1,
+            padding: 8,
+            displayColors: false,
+            callbacks: {
+              title: (items) => {
+                const d = new Date(items[0].label);
+                return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+              },
+              label: (item) => `${item.raw} submission${item.raw !== 1 ? 's' : ''}`
+            }
+          }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false, beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  /**
+   * Apply current filter, search, and sort to allNominations,
+   * storing the result in filteredNominations, then re-render the table.
+   */
+  function applyFiltersAndRender() {
+    let data = [...allNominations];
+
+    // Filter by status
+    if (currentFilter !== 'all') {
+      data = data.filter(n => {
+        const status = n.status || 'pending';
+        return status === currentFilter;
+      });
+    }
+
+    // Search
+    if (currentSearch) {
+      data = data.filter(n => {
+        const haystack = [
+          n.first_name, n.last_name, n.speaker_name, n.email
+        ].filter(Boolean).join(' ').toLowerCase();
+        return haystack.includes(currentSearch);
+      });
+    }
+
+    // Sort
+    data.sort((a, b) => {
+      let valA = a[currentSort.column] || '';
+      let valB = b[currentSort.column] || '';
+
+      if (currentSort.column === 'created_at') {
+        valA = new Date(valA).getTime() || 0;
+        valB = new Date(valB).getTime() || 0;
+      } else if (currentSort.column === 'status') {
+        valA = valA || 'pending';
+        valB = valB || 'pending';
+      }
+
+      if (typeof valA === 'string') {
+        valA = valA.toLowerCase();
+        valB = (valB || '').toLowerCase();
+      }
+
+      if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    filteredNominations = data;
+    renderTable();
+    updateSortIndicators();
+  }
+
+  /**
+   * Update sort direction indicators in table headers.
+   */
+  function updateSortIndicators() {
+    document.querySelectorAll('.nom-table th[data-sort]').forEach(th => {
+      const indicator = th.querySelector('.sort-indicator');
+      if (!indicator) return;
+      if (th.dataset.sort === currentSort.column) {
+        indicator.textContent = currentSort.direction === 'asc' ? ' ↑' : ' ↓';
+      } else {
+        indicator.textContent = '';
+      }
+    });
+  }
+
+  /**
+   * Render the nominations table for the current page.
+   */
+  function renderTable() {
+    const tbody = document.getElementById('table-body');
+    if (!tbody) return;
+
+    const total = filteredNominations.length;
+    const maxPage = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+    if (currentPage > maxPage) currentPage = maxPage;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const end = Math.min(start + ROWS_PER_PAGE, total);
+    const pageData = filteredNominations.slice(start, end);
+
+    if (total === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="table-empty">
+              <div class="table-empty-icon">∅</div>
+              <div class="table-empty-text">No nominations found</div>
+            </div>
+          </td>
+        </tr>
+      `;
+    } else {
+      tbody.innerHTML = pageData.map((n, i) => {
+        const rowNum = start + i + 1;
+        const files = countFiles(n.file_names);
+        const status = n.status || 'pending';
+        const isSelected = n.id === selectedNominationId;
+
+        return `
+          <tr class="nom-row${isSelected ? ' selected' : ''}" data-id="${n.id}">
+            <td>${rowNum}</td>
+            <td>${escapeHtml(n.first_name || '')} ${escapeHtml(n.last_name || '')}</td>
+            <td>${escapeHtml(n.speaker_name || '—')}</td>
+            <td><span class="idea-truncated">${escapeHtml(truncate(n.core_idea, 60))}</span></td>
+            <td>${formatDate(n.created_at)}</td>
+            <td>${files > 0 ? `<span class="docs-badge">${files} file${files > 1 ? 's' : ''}</span>` : '<span class="docs-none">—</span>'}</td>
+            <td>${getStatusBadgeHtml(status)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Bind row clicks
+      tbody.querySelectorAll('.nom-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const id = row.dataset.id;
+          openPanel(id);
+        });
+      });
+    }
+
+    // Update pagination
+    const paginationInfo = document.getElementById('pagination-info');
+    if (paginationInfo) {
+      paginationInfo.textContent = total > 0
+        ? `Showing ${start + 1}–${end} of ${total} nominations`
+        : 'No nominations';
+    }
+
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    if (prevBtn) prevBtn.disabled = currentPage <= 1;
+    if (nextBtn) nextBtn.disabled = currentPage >= maxPage;
+  }
+
+  // ——————————————————————————————————————————
+  // DETAIL PANEL
+  // ——————————————————————————————————————————
+
+  /**
+   * Open the detail panel for a specific nomination.
+   * @param {string} id - Nomination UUID
+   */
+  function openPanel(id) {
+    const nom = allNominations.find(n => n.id === id);
+    if (!nom) return;
+
+    selectedNominationId = id;
+    const status = nom.status || 'pending';
+
+    const panelContent = document.getElementById('panel-content');
+    panelContent.innerHTML = `
+      <!-- Header -->
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <div class="panel-header-label">Nomination Detail</div>
+          <div class="panel-header-time">${formatDateTime(nom.created_at)}</div>
+        </div>
+        <button class="panel-close" id="panel-close-btn" aria-label="Close detail panel">✕</button>
+      </div>
+
+      <!-- Speaker -->
+      <div class="panel-section">
+        <div class="panel-speaker-name">${escapeHtml(nom.speaker_name || 'Unknown Speaker')}</div>
+        ${nom.speaker_linkedin ? `<a href="${escapeHtml(nom.speaker_linkedin)}" target="_blank" rel="noopener noreferrer" class="panel-linkedin">View LinkedIn Profile →</a>` : ''}
+      </div>
+
+      <!-- Status Control -->
+      <div class="panel-section">
+        <div class="panel-section-label">Status</div>
+        <div class="panel-status-current" id="panel-status-badge">${getStatusBadgeHtml(status)}</div>
+        <div class="panel-status-actions" id="panel-status-actions">
+          ${Object.entries(STATUS_MAP).map(([key, val]) => `
+            <button class="status-action-btn ${status === key ? val.activeClass : ''}"
+                    data-status="${key}"
+                    aria-pressed="${status === key}"
+                    type="button">${escapeHtml(val.label)}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Core Idea -->
+      <div class="panel-section">
+        <div class="panel-section-label">Core Idea</div>
+        <div class="panel-text">${escapeHtml(nom.core_idea || '—')}</div>
+      </div>
+
+      <!-- Why This Speaker -->
+      <div class="panel-section">
+        <div class="panel-section-label">Why This Speaker</div>
+        <div class="panel-text">${escapeHtml(nom.why_speaker || '—')}</div>
+      </div>
+
+      <!-- Nominator -->
+      <div class="panel-section">
+        <div class="panel-section-label">Submitted By</div>
+        <div class="panel-nominator-name">${escapeHtml(nom.first_name || '')} ${escapeHtml(nom.last_name || '')}</div>
+        <a href="mailto:${escapeHtml(nom.email || '')}" class="panel-nominator-email">${escapeHtml(nom.email || '')}</a>
+        <div class="panel-nominator-phone">${escapeHtml(nom.phone || '')}</div>
+      </div>
+
+      <!-- Documents -->
+      <div class="panel-section" id="panel-docs-section">
+        <div class="panel-section-label">Supporting Documents</div>
+        <div id="panel-docs-list">
+          ${renderDocsList(nom)}
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="panel-section">
+        <div class="panel-section-label">Internal Notes <span style="font-weight:300;color:var(--text-muted)">(visible to team only)</span></div>
+        <textarea class="notes-textarea" id="panel-notes" placeholder="Add notes about this nomination...">${escapeHtml(nom.notes || '')}</textarea>
+        <div id="notes-save-status"></div>
+      </div>
+    `;
+
+    // Bind panel events
+    document.getElementById('panel-close-btn').addEventListener('click', closePanel);
+
+    // Status buttons
+    document.querySelectorAll('#panel-status-actions .status-action-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        updateStatus(id, btn.dataset.status);
+      });
+    });
+
+    // Document links
+    document.querySelectorAll('.panel-file-link').forEach(link => {
+      link.addEventListener('click', async () => {
+        const path = link.dataset.path;
+        await openSignedUrl(path, link);
+      });
+    });
+
+    // Notes auto-save on blur
+    document.getElementById('panel-notes').addEventListener('blur', async () => {
+      const textarea = document.getElementById('panel-notes');
+      await saveNotes(id, textarea.value);
+    });
+
+    // Open the panel
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('panel-overlay').classList.add('open');
+    document.getElementById('panel-overlay').setAttribute('aria-hidden', 'false');
+
+    // Highlight selected row
+    document.querySelectorAll('.nom-row').forEach(r => r.classList.remove('selected'));
+    const selectedRow = document.querySelector(`.nom-row[data-id="${id}"]`);
+    if (selectedRow) selectedRow.classList.add('selected');
+  }
+
+  /**
+   * Close the detail panel.
+   */
+  function closePanel() {
+    document.getElementById('detail-panel').classList.remove('open');
+    document.getElementById('panel-overlay').classList.remove('open');
+    document.getElementById('panel-overlay').setAttribute('aria-hidden', 'true');
+    selectedNominationId = null;
+    document.querySelectorAll('.nom-row').forEach(r => r.classList.remove('selected'));
+  }
+
+  /**
+   * Render the documents list HTML for a nomination.
+   * @param {Object} nom - Nomination object
+   * @returns {string} HTML string
+   */
+  function renderDocsList(nom) {
+    if (!nom.file_urls || !nom.file_urls.trim()) {
+      return '<div class="panel-no-docs">No supporting documents</div>';
+    }
+
+    const paths = nom.file_urls.split(',').map(p => p.trim()).filter(Boolean);
+    return paths.map(path => {
+      const filename = path.split('/').pop();
+      return `<button class="panel-file-link" data-path="${escapeHtml(path)}" type="button">
+        <span class="panel-file-icon">📎</span>
+        <span>${escapeHtml(filename)}</span>
+      </button>`;
+    }).join('');
+  }
+
+  /**
+   * Open a signed URL for a file in Supabase Storage.
+   * @param {string} path - Storage path
+   * @param {HTMLElement} linkEl - Link element for error display
+   */
+  async function openSignedUrl(path, linkEl) {
+    try {
+      const { data, error } = await supabaseClient.storage
+        .from('nominations')
+        .createSignedUrl(path, 3600);
+
+      if (error) throw error;
+      window.open(data.signedUrl, '_blank');
+    } catch (err) {
+      console.error('Signed URL error:', err);
+      const errorEl = document.createElement('div');
+      errorEl.className = 'panel-file-error';
+      errorEl.textContent = 'Could not load file. Try again.';
+      linkEl.parentNode.insertBefore(errorEl, linkEl.nextSibling);
+      setTimeout(() => errorEl.remove(), 3000);
+    }
+  }
+
+  /**
+   * Update the status of a nomination in Supabase and the local data.
+   * @param {string} id - Nomination UUID
+   * @param {string} newStatus - New status key
+   */
+  async function updateStatus(id, newStatus) {
+    const nom = allNominations.find(n => n.id === id);
+    if (!nom) return;
+
+    const oldStatus = nom.status || 'pending';
+    if (oldStatus === newStatus) return;
+
+    // Optimistic update
+    nom.status = newStatus;
+    nom.reviewed_at = new Date().toISOString();
+    refreshPanelStatus(newStatus);
+    applyFiltersAndRender();
+    updateStatCounters();
+
+    try {
+      const { error } = await supabaseClient
+        .from('nominations')
+        .update({
+          status: newStatus,
+          reviewed_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+      showToast('success', 'Status Updated', `Changed to ${STATUS_MAP[newStatus]?.label || newStatus}`);
+    } catch (err) {
+      console.error('Status update error:', err);
+      // Revert
+      nom.status = oldStatus;
+      nom.reviewed_at = null;
+      refreshPanelStatus(oldStatus);
+      applyFiltersAndRender();
+      updateStatCounters();
+      showToast('error', 'Update Failed', 'Could not update status. Please try again.');
+    }
+  }
+
+  /**
+   * Refresh the status display in the detail panel.
+   * @param {string} status - Current status key
+   */
+  function refreshPanelStatus(status) {
+    const badgeEl = document.getElementById('panel-status-badge');
+    if (badgeEl) badgeEl.innerHTML = getStatusBadgeHtml(status);
+
+    document.querySelectorAll('#panel-status-actions .status-action-btn').forEach(btn => {
+      const btnStatus = btn.dataset.status;
+      const info = STATUS_MAP[btnStatus];
+      // Remove all active classes
+      Object.values(STATUS_MAP).forEach(v => btn.classList.remove(v.activeClass));
+      btn.setAttribute('aria-pressed', 'false');
+
+      if (btnStatus === status && info) {
+        btn.classList.add(info.activeClass);
+        btn.setAttribute('aria-pressed', 'true');
+      }
+    });
+  }
+
+  /**
+   * Save internal notes for a nomination.
+   * @param {string} id - Nomination UUID
+   * @param {string} notes - Notes text
+   */
+  async function saveNotes(id, notes) {
+    const statusEl = document.getElementById('notes-save-status');
+    if (!statusEl) return;
+
+    try {
+      const { error } = await supabaseClient
+        .from('nominations')
+        .update({ notes: notes })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      // Update local data
+      const nom = allNominations.find(n => n.id === id);
+      if (nom) nom.notes = notes;
+
+      statusEl.innerHTML = '<span class="save-indicator success">Saved ✓</span>';
+    } catch (err) {
+      console.error('Notes save error:', err);
+      statusEl.innerHTML = '<span class="save-indicator error">Save failed</span>';
+    }
+  }
+
+  /**
+   * Update all stat counter values (without animation).
+   */
+  function updateStatCounters() {
+    const total = allNominations.length;
+    const today = allNominations.filter(n => {
+      const d = new Date(n.created_at);
+      return d.toDateString() === new Date().toDateString();
+    }).length;
+    const shortlisted = allNominations.filter(n => n.status === 'shortlisted').length;
+    const withDocs = allNominations.filter(n => n.file_names && n.file_names.trim()).length;
+    const pending = allNominations.filter(n => !n.status || n.status === 'pending').length;
+
+    const el = (id, val) => {
+      const e = document.getElementById(id);
+      if (e) e.textContent = String(val).padStart(2, '0');
+    };
+
+    el('stat-total', total);
+    el('stat-today', today);
+    el('stat-shortlisted', shortlisted);
+    el('stat-docs', withDocs);
+    el('stat-pending', pending);
+  }
+
+  // ——————————————————————————————————————————
+  // SUPABASE REALTIME
+  // ——————————————————————————————————————————
+
+  /**
+   * Subscribe to Supabase Realtime for new nominations.
+   */
+  function subscribeRealtime() {
+    if (!supabaseClient) return;
+
+    realtimeChannel = supabaseClient
+      .channel('nominations-realtime')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'nominations' },
+        (payload) => {
+          const newRow = payload.new;
+
+          // Avoid duplicates
+          if (allNominations.find(n => n.id === newRow.id)) return;
+
+          // Prepend to dataset
+          allNominations.unshift(newRow);
+          applyFiltersAndRender();
+          updateStatCounters();
+          renderSparkline();
+
+          // Toast
+          showToast('success', 'New Nomination', `${newRow.speaker_name || 'Unknown'} — just submitted`);
+        }
+      )
+      .subscribe();
+  }
+
+  // ——————————————————————————————————————————
+  // CSV EXPORT
+  // ——————————————————————————————————————————
+
+  /**
+   * Export nominations as a CSV file download.
+   * @param {Array} nominations - Array of nomination objects to export
+   */
+  function exportCSV(nominations) {
+    if (!nominations || nominations.length === 0) {
+      showToast('error', 'Export Failed', 'No nominations to export.');
+      return;
+    }
+
+    const headers = ['ID', 'Nominator', 'Email', 'Phone', 'Speaker', 'LinkedIn', 'Core Idea', 'Why Speaker', 'Files', 'Status', 'Notes', 'Submitted At'];
+    const rows = nominations.map(n => [
+      n.id,
+      `${n.first_name || ''} ${n.last_name || ''}`.trim(),
+      n.email || '',
+      n.phone || '',
+      n.speaker_name || '',
+      n.speaker_linkedin || '',
+      `"${(n.core_idea || '').replace(/"/g, '""')}"`,
+      `"${(n.why_speaker || '').replace(/"/g, '""')}"`,
+      n.file_names || '',
+      n.status || 'pending',
+      `"${(n.notes || '').replace(/"/g, '""')}"`,
+      n.created_at || ''
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nominations_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('success', 'CSV Exported', `${nominations.length} nomination${nominations.length !== 1 ? 's' : ''} exported.`);
+  }
+
+  // ——————————————————————————————————————————
+  // INITIALIZATION
+  // ——————————————————————————————————————————
+
+  /**
+   * Main entry point — runs on DOMContentLoaded.
+   * Checks for existing session, renders login or dashboard accordingly.
+   */
+  function init() {
+    if (hasValidSession()) {
+      document.getElementById('login-screen').classList.add('hidden');
+      initDashboard();
+    } else {
+      initLogin();
+    }
+  }
+
+  // Keyboard: Escape closes the detail panel
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const panel = document.getElementById('detail-panel');
+      if (panel && panel.classList.contains('open')) {
+        closePanel();
+      }
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', init);
+
+})();
+</script>
+
+</body>
+</html>
