@@ -44,13 +44,16 @@ ALTER TABLE nominations ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "anon_insert" ON nominations
   FOR INSERT TO anon WITH CHECK (true);
 
--- Policy: Authenticated users can read all nominations (dashboard)
-CREATE POLICY "auth_select" ON nominations
-  FOR SELECT TO authenticated USING (true);
+-- Policy: Allow anonymous users to read all nominations (dashboard reads)
+CREATE POLICY "anon_select" ON nominations
+  FOR SELECT TO anon USING (true);
 
--- Policy: Authenticated users can update status and notes (dashboard actions)
-CREATE POLICY "auth_update" ON nominations
-  FOR UPDATE TO authenticated USING (true);
+-- Policy: Allow anonymous users to update status and notes (dashboard actions)
+CREATE POLICY "anon_update" ON nominations
+  FOR UPDATE TO anon USING (true);
+
+-- IMPORTANT: Grant the anon role the actual privilege to update the table
+GRANT UPDATE ON nominations TO anon;
 ```
 
 > **Note:** If you already have RLS enabled or existing policies, check for conflicts first. You can view existing policies in Supabase → Authentication → Policies.
@@ -336,15 +339,15 @@ The admin dashboard uses **client-side password verification** (SHA-256 hash com
 - **The hash never reveals the password.** SHA-256 is a one-way function. Even if someone reads `config.js`, they'd need to brute-force the hash.
 - **The dashboard uses the `anon` key.** This key is already public (embedded in the public nomination form). The dashboard doesn't use any elevated Supabase credentials.
 
-**What a determined attacker could do:** Open the browser's Developer Tools, find the Supabase anon key in `config.js`, and use it to query the `nominations` table directly. RLS policies would need to account for this. The current policies allow `SELECT` for `authenticated` role only — the `anon` role can only `INSERT`.
+**What a determined attacker could do:** Open the browser's Developer Tools, find the Supabase anon key in `config.js`, and use it to query the `nominations` table directly via the Supabase API. Because the dashboard relies on the `anon` key, the RLS policies now allow `SELECT` and `UPDATE` for the `anon` role. This means the data is technically public to anyone who knows the Supabase URL and anon key.
 
-### Why Supabase RLS Is the Real Security Layer
+### Why We Are Using These RLS Policies
 
-Row Level Security policies are enforced server-side by PostgreSQL. They cannot be bypassed from the client. The policies we set up ensure:
+Since this dashboard avoids Supabase Auth in favor of a lightweight client-side password, it must connect as an anonymous user (`anon` role). 
+Therefore, the database must grant `anon` the ability to `SELECT` and `UPDATE` nominations for the dashboard to function.
 
-- **Anonymous users** (public website visitors) can only INSERT new nominations
-- **Authenticated users** can SELECT and UPDATE nominations
-- No role can DELETE nominations
+- **Anonymous users** can INSERT, SELECT, and UPDATE nominations.
+- No role can DELETE nominations.
 
 ### Password Best Practices
 
@@ -365,9 +368,9 @@ Row Level Security policies are enforced server-side by PostgreSQL. They cannot 
 - [ ] **Rotate the password hash** — Generate a new hash and update `config.js`
 - [ ] **Add a "Nominations Closed" notice** — Optionally, update the dashboard's deadline card or add a banner
 - [ ] **Disable Realtime** — Comment out `subscribeRealtime()` in `initDashboard()` to stop the WebSocket connection
-- [ ] **Consider read-only mode** — Remove or restrict the `auth_update` RLS policy if no more status changes are needed:
+- [ ] **Consider read-only mode** — Remove or restrict the `anon_update` RLS policy if no more status changes are needed:
   ```sql
-  DROP POLICY "auth_update" ON nominations;
+  DROP POLICY "anon_update" ON nominations;
   ```
 - [ ] **Export final data** — Use the CSV export to create a complete backup of all nominations with statuses and notes
 - [ ] **Archive** — Consider backing up the Supabase database before any cleanup

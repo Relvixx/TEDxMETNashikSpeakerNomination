@@ -1615,9 +1615,9 @@ body::before {
    * @param {string} fileNames - Comma-separated file names
    * @returns {number} Count
    */
-  function countFiles(fileNames) {
-    if (!fileNames || !fileNames.trim()) return 0;
-    return fileNames.split(',').filter(f => f.trim()).length;
+  function countFiles(fileUrls) {
+    if (!fileUrls || !fileUrls.trim()) return 0;
+    return fileUrls.split(',').filter(f => f.trim()).length;
   }
 
   // ——————————————————————————————————————————
@@ -1933,7 +1933,7 @@ body::before {
       return d.toDateString() === now.toDateString();
     }).length;
     const shortlisted = allNominations.filter(n => n.status === 'shortlisted').length;
-    const withDocs = allNominations.filter(n => n.file_names && n.file_names.trim()).length;
+    const withDocs = allNominations.filter(n => n.file_urls && n.file_urls.trim()).length;
     const pending = allNominations.filter(n => !n.status || n.status === 'pending').length;
     const daysLeft = Math.max(0, Math.ceil((DEADLINE_DATE - new Date()) / (1000 * 60 * 60 * 24)));
 
@@ -2264,7 +2264,7 @@ body::before {
     } else {
       tbody.innerHTML = pageData.map((n, i) => {
         const rowNum = start + i + 1;
-        const files = countFiles(n.file_names);
+        const files = countFiles(n.file_urls);
         const status = n.status || 'pending';
         const isSelected = n.id === selectedNominationId;
 
@@ -2577,7 +2577,7 @@ body::before {
       return d.toDateString() === new Date().toDateString();
     }).length;
     const shortlisted = allNominations.filter(n => n.status === 'shortlisted').length;
-    const withDocs = allNominations.filter(n => n.file_names && n.file_names.trim()).length;
+    const withDocs = allNominations.filter(n => n.file_urls && n.file_urls.trim()).length;
     const pending = allNominations.filter(n => !n.status || n.status === 'pending').length;
 
     const el = (id, val) => {
@@ -2650,7 +2650,7 @@ body::before {
       n.speaker_linkedin || '',
       `"${(n.core_idea || '').replace(/"/g, '""')}"`,
       `"${(n.why_speaker || '').replace(/"/g, '""')}"`,
-      n.file_names || '',
+      n.file_urls || '',
       n.status || 'pending',
       `"${(n.notes || '').replace(/"/g, '""')}"`,
       n.created_at || ''
