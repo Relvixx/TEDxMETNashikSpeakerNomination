@@ -9,7 +9,28 @@
    - ZERO Gradients, ZERO Glow, ZERO Glass Effects
    ============================================================ */
 
+/* ────────────────────────────────────────────────────────────
+   RESPONSIVE FOUNDATION (Phase 1)
+   ────────────────────────────────────────────────────────────
+   Breakpoint Architecture (max-width, desktop-first):
+
+   Name    Width    Covers
+   ─────   ──────   ──────────────────────────────────────
+   2xl     1536px   1536, 1728, 1920+
+   xl      1280px   1280, 1366, 1440
+   lg      1024px   1024
+   md       768px   768, 820, 834
+   sm       600px   600
+   xs       480px   430, 480
+   2xs      360px   320, 360, 375, 390, 393, 412
+
+   NOTE: CSS custom properties cannot be used in @media.
+   Breakpoint values are documented here and used as
+   literal px values in @media rules below.
+   ──────────────────────────────────────────────────────────── */
+
 :root {
+  /* ── Color Palette ── */
   --red: #E62B1E;
   --black: #080808;
   --bg: #080808;
@@ -19,14 +40,56 @@
   --border: #222222;
   --border-dark: #333333;
 
+  /* ── Typography ── */
   --font-head: 'Inter Tight', -apple-system, sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
+  /* ── Layout ── */
   --nav-h: 70px;
   --max-w: 1360px;
   --pad-x: clamp(20px, 4vw, 80px);
   --section-pad: clamp(80px, 10vw, 140px);
+
+  /* ── Spacing Scale (4px base unit) ──
+     var(--sp-N) = N × 4px                          */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-9: 36px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-14: 56px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+  --sp-24: 96px;
+
+  /* ── Viewport Units ──
+     Auto-upgrades to dvh via @supports below.       */
+  --vh: 1vh;
+  --full-h: 100vh;
+  --half-h: 50vh;
+
+  /* ── Safe Area Insets ──
+     For notch/island devices and mobile browser UI. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+/* ── Dynamic Viewport Height — progressive enhancement ── */
+@supports (height: 100dvh) {
+  :root {
+    --vh: 1dvh;
+    --full-h: 100dvh;
+    --half-h: 50dvh;
+  }
 }
 
 *, *::before, *::after {
@@ -1053,7 +1116,42 @@ main {
 }
 
 /* ============================================================
+   RESPONSIVE FOUNDATION — Utilities
+   Reusable infrastructure classes for layout and safe areas.
+   ============================================================ */
+
+/* Container — max-width + auto-center + horizontal padding */
+.r-container {
+  max-width: var(--max-w);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--pad-x);
+  padding-right: var(--pad-x);
+}
+
+/* Section vertical rhythm */
+.r-section {
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
+}
+
+/* Safe-area-aware horizontal padding (notch/island devices) */
+.r-safe-x {
+  padding-left: max(var(--pad-x), var(--safe-left));
+  padding-right: max(var(--pad-x), var(--safe-right));
+}
+
+/* Safe-area-aware bottom padding (home indicator / browser UI) */
+.r-safe-bottom {
+  padding-bottom: max(var(--sp-6), var(--safe-bottom));
+}
+
+/* ============================================================
    RESPONSIVE DESIGN
+   ────────────────────────────────────────────────────────────
+   Breakpoint: lg  (max-width: 1024px) — Tablet landscape
+   Breakpoint: md  (max-width: 768px)  — Tablet portrait
+   Breakpoint: xs  (max-width: 480px)  — Mobile
    ============================================================ */
 @media (max-width: 1024px) {
   .hero-container { grid-template-columns: 1fr; text-align: center; }
@@ -1273,79 +1371,4 @@ main {
     font-size: 22px;
   }
 }
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
 
-.modal-overlay.active {
-  display: flex;
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-card {
-  position: relative;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border);
-  padding: 40px;
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-}
-
-.modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
-  border: none;
-  color: var(--white);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.modal-close:hover {
-  color: var(--red);
-}
-
-.modal-tag {
-  font-family: var(--font-head);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--red);
-  margin-bottom: 12px;
-  letter-spacing: 0.08em;
-}
-
-.modal-title {
-  font-family: var(--font-head);
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--white);
-  margin-bottom: 12px;
-}
-
-.modal-desc {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--gray);
-  line-height: 1.6;
-  margin-bottom: 28px;
-}
-
-.modal-action-btn {
-  width: 100%;
-  cursor: pointer;
-}
-
-@media (max-width: 480px) {
-  .modal-card {
-    padding: 28px 20px;
-  }
-  .modal-title {
-    font-size: 22px;
-  }
-}

@@ -9,13 +9,55 @@
   box-sizing:border-box;
 }
 
+/* ── Responsive Foundation (Phase 1) ──
+   Shared spacing scale and viewport tokens.
+   Breakpoint architecture documented in landing page stylesheet. */
+
 :root{
+  /* ── Color Palette ── */
   --red:#E62B1E;
   --red-dark:#c42116;
   --black:#0D0D0D;
   --white:#F0EDE8;
   --gray:#878787;
   --line:rgba(255,255,255,.08);
+
+  /* ── Spacing Scale (4px base, shared cross-page) ── */
+  --sp-1:4px;
+  --sp-2:8px;
+  --sp-3:12px;
+  --sp-4:16px;
+  --sp-5:20px;
+  --sp-6:24px;
+  --sp-7:28px;
+  --sp-8:32px;
+  --sp-9:36px;
+  --sp-10:40px;
+  --sp-12:48px;
+  --sp-14:56px;
+  --sp-16:64px;
+  --sp-20:80px;
+  --sp-24:96px;
+
+  /* ── Viewport Units ── */
+  --vh:1vh;
+  --full-h:100vh;
+  --half-h:50vh;
+
+  /* ── Safe Area Insets ── */
+  --safe-top:env(safe-area-inset-top, 0px);
+  --safe-right:env(safe-area-inset-right, 0px);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+  --safe-left:env(safe-area-inset-left, 0px);
+}
+
+/* ── Dynamic Viewport Height — progressive enhancement ── */
+@supports (height:100dvh){
+  :root{
+    --vh:1dvh;
+    --full-h:100dvh;
+    --half-h:50dvh;
+  }
 }
 
 html{
