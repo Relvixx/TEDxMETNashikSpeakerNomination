@@ -876,6 +876,7 @@ body.nav-open {
   flex-direction: column;
   justify-content: space-between;
   min-height: 280px;
+  height: 100%;
   transition: border-color 0.2s ease;
 }
 
@@ -899,6 +900,9 @@ body.nav-open {
   font-weight: 800;
   color: var(--white);
   margin-bottom: 6px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 .sp-topic {
@@ -1018,7 +1022,7 @@ body.nav-open {
 
 .venue-wireframe-card {
   position: relative;
-  height: 340px;
+  min-height: 340px;
   background-color: var(--card-bg);
   border: 1px solid var(--border);
   padding: 40px;
@@ -1398,7 +1402,7 @@ body.nav-open {
   }
 
   .venue-wireframe-card {
-    height: 220px;
+    min-height: 220px;
   }
 
   .footer-grid {
