@@ -616,16 +616,15 @@ body.nav-open {
 
 .hero-title {
   font-family: var(--font-head);
-  font-size: clamp(36px, 12vw, 170px);
+  font-size: clamp(32px, 8vw, 170px);
   font-weight: 900;
   letter-spacing: -0.04em;
   line-height: 0.88;
   color: var(--white);
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-bottom: var(--sp-5);
-  overflow-wrap: break-word;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
 .letter { display: inline-block; }
@@ -1473,7 +1472,7 @@ body.nav-open {
   .logo-college { height: 32px; }
   .nav-tag { display: none; }
   .hero-title {
-    font-size: clamp(32px, 10vw, 42px);
+    font-size: clamp(28px, 9vw, 42px);
     letter-spacing: -0.03em;
   }
   .hero-subtitle {
