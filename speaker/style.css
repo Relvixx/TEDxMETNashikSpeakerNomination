@@ -499,8 +499,10 @@ body.nav-open{
   transition:background .3s, transform .3s;
 }
 
-.stat:hover{
-  background:rgba(0,0,0,.08);
+@media (hover: hover) {
+  .stat:hover {
+    background: rgba(0,0,0,.08);
+  }
 }
 
 .stat-number{
@@ -511,8 +513,10 @@ body.nav-open{
   transition:transform .4s cubic-bezier(.16,1,.3,1);
 }
 
-.stat:hover .stat-number{
-  transform:scale(1.08);
+@media (hover: hover) {
+  .stat:hover .stat-number {
+    transform: scale(1.08);
+  }
 }
 
 .stat-label{
@@ -533,8 +537,10 @@ body.nav-open{
   transition:transform .4s cubic-bezier(.16,1,.3,1);
 }
 
-.stat-theme:hover .stat-theme-name{
-  transform:scale(1.08);
+@media (hover: hover) {
+  .stat-theme:hover .stat-theme-name {
+    transform: scale(1.08);
+  }
 }
 
 /* =========================
@@ -611,23 +617,23 @@ body.nav-open{
   transition: transform .3s cubic-bezier(.16,1,.3,1);
 }
 
-.criteria-card:hover{
-  background:rgba(230,43,30,.02);
+.criteria-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  color: #ccc;
+  transition: color .3s;
 }
 
-.criteria-card:hover > * {
-  transform: translateX(12px);
-}
-
-.criteria-number{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:40px;
-  color:#ccc;
-  transition:color .3s;
-}
-
-.criteria-card:hover .criteria-number{
-  color:var(--red);
+@media (hover: hover) {
+  .criteria-card:hover {
+    background: rgba(230,43,30,.02);
+  }
+  .criteria-card:hover > * {
+    transform: translateX(12px);
+  }
+  .criteria-card:hover .criteria-number {
+    color: var(--red);
+  }
 }
 
 .criteria-name{
