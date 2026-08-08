@@ -345,7 +345,23 @@ main {
   transform: translateX(-50%) rotate(-45deg);
 }
 
-/* ── Mobile Dropdown Menu — Phase 2 Glassmorphism ── */
+/* ── Mobile Dropdown Menu — Phase 2 Glassmorphism + Phase 3 Motion + Phase 1 Editorial + Phase 2 Ambient ── */
+@keyframes sweepMotion {
+  0% { background-position: 250% 250%; }
+  35% { background-position: -100% -100%; }
+  100% { background-position: -100% -100%; }
+}
+
+@keyframes gridDrift {
+  0% { background-position: 0px 0px, 0px 0px, 0 0; }
+  100% { background-position: -16px -16px, -16px -16px, 0 0; }
+}
+
+@keyframes redPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
 .nav-mobile-drawer {
   position: fixed;
   top: var(--nav-h);
@@ -355,12 +371,12 @@ main {
   z-index: 99;
   width: min(320px, calc(100vw - 32px));
 
-  /* Glass surface */
-  background: linear-gradient(
-    135deg,
-    rgba(18, 18, 18, 0.82),
-    rgba(13, 13, 13, 0.88)
-  );
+  /* Glass surface + Micro technical grid texture (Element 5) */
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(18, 18, 18, 0.82), rgba(13, 13, 13, 0.88));
+  background-size: 16px 16px, 16px 16px, 100% 100%;
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   backdrop-filter: blur(20px) saturate(1.2);
 
@@ -388,6 +404,40 @@ main {
   transition: opacity 0.18s ease-out,
               visibility 0.18s,
               transform 0.18s ease-out;
+
+  /* Ambient Grid Drift */
+  animation: gridDrift 20s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Subtle TEDx Red Glass Edge (Element 3) + Ambient Pulse */
+.nav-mobile-drawer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: 24px;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.8;
+  z-index: 2;
+  animation: redPulse 4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+/* Ambient Glass Light Sweep */
+.nav-mobile-drawer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 65%, transparent 100%);
+  background-size: 250% 250%;
+  background-position: 250% 250%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  animation: sweepMotion 9s linear infinite;
+  animation-play-state: paused;
 }
 
 .nav-mobile-drawer.open {
@@ -395,10 +445,17 @@ main {
   opacity: 1;
   /* Open state */
   transform: translateY(0) scale(1);
-  /* Open transition (premium ease) */
-  transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.26s,
-              transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Open transition (precision instrument ease) */
+  transition: opacity 0.32s cubic-bezier(0.19, 1, 0.22, 1),
+              visibility 0.32s,
+              transform 0.32s cubic-bezier(0.19, 1, 0.22, 1);
+  /* Resume ambient motion when open */
+  animation-play-state: running;
+}
+
+.nav-mobile-drawer.open::before,
+.nav-mobile-drawer.open::after {
+  animation-play-state: running;
 }
 
 .drawer-inner {
@@ -407,11 +464,24 @@ main {
   width: 100%;
 }
 
+/* Technical Metadata (Element 2) */
+.drawer-inner::before {
+  content: "TEDXMET NASHIK // 2026";
+  display: block;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 0 12px 14px 12px;
+}
+
 .drawer-inner ul {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  counter-reset: drawer-nav;
 }
 
 .drawer-link {
@@ -419,7 +489,8 @@ main {
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 13px 12px;
   color: var(--white);
   text-decoration: none;
@@ -432,6 +503,31 @@ main {
               transform 0.15s ease-out,
               color 0.2s ease,
               background-color 0.2s ease;
+}
+
+/* Numbered Navigation (Element 1) */
+.drawer-link:not(.drawer-link--cta)::before {
+  counter-increment: drawer-nav;
+  content: "0" counter(drawer-nav);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.35;
+  margin-right: 14px;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Neutral Active/Selection Indicator (Element 4) */
+.drawer-link:not(.drawer-link--cta)::after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  margin-left: auto;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 /* Stagger animation when dropdown opens */
@@ -452,12 +548,11 @@ main {
 .nav-mobile-drawer.open .drawer-inner li:nth-child(5) .drawer-link { transition-delay: 0.080s; }
 .nav-mobile-drawer.open .drawer-inner li:nth-child(6) .drawer-link { transition-delay: 0.095s; }
 
-.drawer-link:hover {
-  color: var(--white);
-  background-color: rgba(255, 255, 255, 0.08);
+/* Touch-safe active states (Micro-interaction & Touch) */
+.drawer-link:active { 
+  transform: scale(0.98); 
+  background-color: rgba(255, 255, 255, 0.04);
 }
-
-.drawer-link:active { transform: scale(0.98); }
 
 .drawer-link:focus-visible {
   outline: 2px solid var(--red);
@@ -477,11 +572,36 @@ main {
   border-bottom: none;
   background: none;
   font-size: inherit;
+  justify-content: center;
 }
 
-.drawer-link--cta:hover {
-  color: var(--white);
-  background-color: rgba(230, 43, 30, 0.12);
+.drawer-link--cta:active {
+  transform: scale(0.98);
+  background-color: rgba(230, 43, 30, 0.15);
+}
+
+/* Intelligent Hover Layer for Pointer Devices (Phase 3) */
+@media (hover: hover) {
+  .drawer-link:hover {
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateX(2px);
+  }
+  
+  .drawer-link--cta:hover {
+    transform: translateY(-1px);
+    background-color: rgba(230, 43, 30, 0.12);
+  }
+  
+  .drawer-link:hover::before {
+    opacity: 0.55;
+    transform: translateX(1px);
+  }
+  
+  .drawer-link:hover::after {
+    opacity: 0.45;
+    transform: scale(1.15) translateX(1px);
+  }
 }
 
 /* Body scroll-lock preserved for modal use — no longer applied by nav dropdown */
@@ -495,14 +615,23 @@ body.nav-open {
   .nav-mobile-toggle span {
     transition: none;
   }
-  .nav-mobile-drawer {
-    transition: none;
+  .nav-mobile-drawer,
+  .nav-mobile-drawer::before,
+  .nav-mobile-drawer::after {
+    transition: none !important;
+    animation: none !important;
   }
   .drawer-link,
+  .drawer-link::before,
+  .drawer-link::after,
   .nav-mobile-drawer.open .drawer-link {
-    transition: none;
+    transition: none !important;
     opacity: 1;
-    transform: none;
+    transform: none !important;
+  }
+  .drawer-link:hover,
+  .drawer-link--cta:hover {
+    transform: none !important;
   }
 }
 
