@@ -107,6 +107,7 @@ body.swiss-dark-theme {
   font-family: var(--font-body);
   background-color: var(--bg);
   color: var(--white);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   position: relative;
@@ -527,6 +528,8 @@ body.nav-open {
   letter-spacing: -0.03em;
   line-height: 1.05;
   color: var(--white);
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .section-container {
