@@ -299,7 +299,7 @@
 
       <div class="field reveal">
         <label for="phone">Phone Number</label>
-        <input type="text" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" aria-describedby="error-phone" required>
+        <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" aria-describedby="error-phone" required>
         <span id="error-phone" class="error-msg" role="alert">Please enter a valid phone number</span>
       </div>
 
@@ -362,7 +362,7 @@
     </form>
 
     <!-- SUCCESS PANEL -->
-    <div id="success-panel" class="success-panel">
+    <div id="success-panel" class="success-panel" role="region" aria-live="polite">
       <div class="success-icon">✓</div>
       <h3 class="success-title">Nomination for <span id="success-speaker-name" class="text-red"></span> submitted</h3>
       <p class="success-email">Confirmation sent to <strong id="success-email-address"></strong></p>

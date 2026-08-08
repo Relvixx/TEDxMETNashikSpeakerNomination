@@ -633,6 +633,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
     toast.innerHTML = `
       <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
       <div class="toast-body">

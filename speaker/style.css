@@ -832,6 +832,11 @@ body.nav-open{
   box-shadow:none;
 }
 
+.submit-btn:focus-visible{
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
 /* Loading spinner inside submit button */
 .submit-btn.loading{
   pointer-events:none;
@@ -997,6 +1002,11 @@ body.nav-open{
   opacity:0;
   cursor:pointer;
   z-index:2;
+}
+
+.file-upload-wrap:has(.file-input:focus-visible) {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
 }
 
 /* Visible upload UI row */

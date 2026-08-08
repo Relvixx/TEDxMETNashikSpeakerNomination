@@ -290,6 +290,15 @@ main {
   border-color: var(--white);
 }
 
+.btn-nav-nominate:active {
+  transform: scale(0.97);
+}
+
+.btn-nav-nominate:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
 /* ── Hamburger Toggle ── */
 .nav-mobile-toggle {
   display: none;
@@ -485,6 +494,15 @@ body.nav-open {
   border-color: var(--white);
 }
 
+.btn-solid-red:active {
+  transform: scale(0.97);
+}
+
+.btn-solid-red:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
 .btn-outline-white {
   display: inline-flex;
   align-items: center;
@@ -504,6 +522,15 @@ body.nav-open {
 .btn-outline-white:hover {
   background-color: var(--white);
   color: var(--black);
+}
+
+.btn-outline-white:active {
+  transform: scale(0.97);
+}
+
+.btn-outline-white:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
 }
 
 .text-red { color: var(--red); }
@@ -1111,6 +1138,15 @@ body.nav-open {
   color: var(--red);
 }
 
+.faq-btn:active {
+  transform: scale(0.99);
+}
+
+.faq-btn:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: -4px;
+}
+
 .faq-icon {
   color: var(--red);
   font-size: 18px;
@@ -1520,6 +1556,12 @@ body.nav-open {
 
 .modal-close:hover {
   color: var(--red);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .modal-tag {
