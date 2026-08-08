@@ -289,59 +289,17 @@
     }
   });
 
-  // Mobile Menu Drawer — Phase 2 State Machine
+  // Mobile Menu Dropdown — Phase 1 Floating Dropdown Architecture
   const mobileToggle = document.getElementById('mobile-toggle');
   const mobileDrawer = document.getElementById('mobile-drawer');
   const drawerLinks = document.querySelectorAll('.drawer-link');
-  let savedScrollY = 0;
-
-  let drawerFocusHandler = null;
-
-  function trapDrawerFocus() {
-    const focusableElements = mobileDrawer.querySelectorAll('a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])');
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    if (!firstElement) return null;
-
-    return function(e) {
-      const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
-      if (!isTabPressed) return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          lastElement.focus();
-          e.preventDefault();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          firstElement.focus();
-          e.preventDefault();
-        }
-      }
-    };
-  }
 
   function openDrawer() {
     if (!mobileDrawer || mobileDrawer.classList.contains('open')) return;
-    savedScrollY = window.scrollY;
     mobileDrawer.classList.add('open');
     mobileToggle.classList.add('active');
     mobileToggle.setAttribute('aria-expanded', 'true');
     mobileDrawer.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('nav-open');
-    document.body.style.top = `-${savedScrollY}px`;
-
-    // Focus trap
-    drawerFocusHandler = trapDrawerFocus();
-    if (drawerFocusHandler) {
-      document.addEventListener('keydown', drawerFocusHandler);
-      // Focus first element
-      setTimeout(() => {
-        const firstFocusable = mobileDrawer.querySelector('a[href], button');
-        if (firstFocusable) firstFocusable.focus();
-      }, 50);
-    }
   }
 
   function closeDrawer() {
@@ -350,15 +308,7 @@
     mobileToggle.classList.remove('active');
     mobileToggle.setAttribute('aria-expanded', 'false');
     mobileDrawer.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('nav-open');
-    document.body.style.top = '';
-    window.scrollTo(0, savedScrollY);
 
-    if (drawerFocusHandler) {
-      document.removeEventListener('keydown', drawerFocusHandler);
-      drawerFocusHandler = null;
-    }
-    
     // Restore focus to trigger button
     mobileToggle.focus();
   }
@@ -378,6 +328,15 @@
       }
     });
 
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (mobileDrawer.classList.contains('open') &&
+          !mobileDrawer.contains(e.target) &&
+          !mobileToggle.contains(e.target)) {
+        closeDrawer();
+      }
+    });
+
     // Close on viewport resize past mobile breakpoint
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768 && mobileDrawer.classList.contains('open')) {
@@ -385,7 +344,7 @@
       }
     });
 
-    // Drawer link click — close and smooth-scroll to anchor
+    // Dropdown link click — close and smooth-scroll to anchor
     drawerLinks.forEach(link => {
       link.addEventListener('click', () => {
         const href = link.getAttribute('href');

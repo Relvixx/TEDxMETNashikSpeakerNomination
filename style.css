@@ -345,92 +345,131 @@ main {
   transform: translateX(-50%) rotate(-45deg);
 }
 
-/* ── Mobile Drawer ── */
+/* ── Mobile Dropdown Menu — Phase 2 Glassmorphism ── */
 .nav-mobile-drawer {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: var(--nav-h);
+  right: var(--pad-x);
+  left: auto;
+  bottom: auto;
   z-index: 99;
-  background-color: var(--black);
+  width: min(320px, calc(100vw - 32px));
+
+  /* Glass surface */
+  background: linear-gradient(
+    135deg,
+    rgba(18, 18, 18, 0.82),
+    rgba(13, 13, 13, 0.88)
+  );
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(20px) saturate(1.2);
+
+  /* Glass edge */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+
+  /* Cinematic depth */
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.35),
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: var(--nav-h);
-  padding-bottom: max(var(--sp-10), var(--safe-bottom));
+  align-items: stretch;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  max-height: calc(100vh - var(--nav-h) - 24px);
   visibility: hidden;
   opacity: 0;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.35s;
+  /* Close state */
+  transform: translateY(-8px) scale(0.98);
+  /* Close transition (faster) */
+  transition: opacity 0.18s ease-out,
+              visibility 0.18s,
+              transform 0.18s ease-out;
 }
 
 .nav-mobile-drawer.open {
   visibility: visible;
   opacity: 1;
+  /* Open state */
+  transform: translateY(0) scale(1);
+  /* Open transition (premium ease) */
+  transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.26s,
+              transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .drawer-inner {
-  text-align: center;
-  padding: var(--pad-x);
+  text-align: left;
+  padding: 16px 20px;
   width: 100%;
-  max-width: 400px;
 }
 
 .drawer-inner ul {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+  gap: 2px;
 }
 
 .drawer-link {
   font-family: var(--font-head);
-  font-size: clamp(28px, 6vw, 42px);
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   display: block;
-  padding: var(--sp-4) 0;
+  padding: 13px 12px;
   color: var(--white);
   text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-  /* Stagger entrance — set by JS or nth-child */
+  border-radius: 8px;
+  /* Base state */
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(-3px);
+  /* Close transition (fast, no delay) */
+  transition: opacity 0.15s ease-out,
+              transform 0.15s ease-out,
+              color 0.2s ease,
+              background-color 0.2s ease;
 }
 
-/* Stagger animation when drawer opens */
+/* Stagger animation when dropdown opens */
 .nav-mobile-drawer.open .drawer-link {
   opacity: 1;
   transform: translateY(0);
-  transition: color 0.2s ease,
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Open transition */
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s ease,
+              background-color 0.2s ease;
 }
 
-.nav-mobile-drawer.open .drawer-inner li:nth-child(1) .drawer-link { transition-delay: 0.06s; }
-.nav-mobile-drawer.open .drawer-inner li:nth-child(2) .drawer-link { transition-delay: 0.1s; }
-.nav-mobile-drawer.open .drawer-inner li:nth-child(3) .drawer-link { transition-delay: 0.14s; }
-.nav-mobile-drawer.open .drawer-inner li:nth-child(4) .drawer-link { transition-delay: 0.18s; }
-.nav-mobile-drawer.open .drawer-inner li:nth-child(5) .drawer-link { transition-delay: 0.22s; }
-.nav-mobile-drawer.open .drawer-inner li:nth-child(6) .drawer-link { transition-delay: 0.28s; }
+.nav-mobile-drawer.open .drawer-inner li:nth-child(1) .drawer-link { transition-delay: 0.020s; }
+.nav-mobile-drawer.open .drawer-inner li:nth-child(2) .drawer-link { transition-delay: 0.035s; }
+.nav-mobile-drawer.open .drawer-inner li:nth-child(3) .drawer-link { transition-delay: 0.050s; }
+.nav-mobile-drawer.open .drawer-inner li:nth-child(4) .drawer-link { transition-delay: 0.065s; }
+.nav-mobile-drawer.open .drawer-inner li:nth-child(5) .drawer-link { transition-delay: 0.080s; }
+.nav-mobile-drawer.open .drawer-inner li:nth-child(6) .drawer-link { transition-delay: 0.095s; }
 
-.drawer-link:hover { color: var(--red); }
-.drawer-link:active { transform: scale(0.97); }
+.drawer-link:hover {
+  color: var(--white);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.drawer-link:active { transform: scale(0.98); }
 
 .drawer-link:focus-visible {
   outline: 2px solid var(--red);
-  outline-offset: 4px;
+  outline-offset: 2px;
 }
 
-/* CTA link in drawer */
+/* CTA link in dropdown */
 .drawer-link--cta {
   color: var(--red);
-  margin-top: var(--sp-4);
-  border-top: 1px solid var(--border);
-  padding-top: var(--sp-6);
+  margin-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
   width: 100%;
   cursor: pointer;
   border-left: none;
@@ -442,15 +481,13 @@ main {
 
 .drawer-link--cta:hover {
   color: var(--white);
+  background-color: rgba(230, 43, 30, 0.12);
 }
 
-/* Body scroll-lock when drawer is open */
+/* Body scroll-lock preserved for modal use — no longer applied by nav dropdown */
 body.nav-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
+  /* Intentionally emptied for Phase 1: floating dropdown does not need scroll-lock.
+     Class retained to avoid breaking other subsystems that may reference it. */
 }
 
 /* ── Reduced Motion ── */
