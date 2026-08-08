@@ -128,7 +128,7 @@ nav{
   position:fixed;
   top:0;
   width:100%;
-  height:64px;
+  height:70px;
   padding:0 36px;
   background:rgba(13,13,13,.95);
   backdrop-filter:blur(10px);
@@ -412,7 +412,7 @@ body.nav-open{
 
 .hero-left{
   background:var(--white);
-  padding:72px 60px 60px;
+  padding:clamp(40px, 8vw, 72px) clamp(24px, 5vw, 60px);
   position:relative;
   border-right:1px solid rgba(0,0,0,.08);
 }
@@ -752,7 +752,13 @@ body.nav-open{
   font-size:14px;
   font-family:'IBM Plex Sans',sans-serif;
   outline:none;
-  transition:border-color .3s;
+  transition:border-color .3s ease;
+}
+
+.field input:hover,
+.field textarea:hover,
+.field select:hover{
+  border-color:rgba(255,255,255,.3);
 }
 
 .field input:focus,
@@ -1262,6 +1268,7 @@ footer{
 
   nav{
     padding:0 20px;
+    height:64px;
   }
 
   .nav-right{
@@ -1390,6 +1397,10 @@ footer{
 }
 
 @media(max-width:480px){
+
+  nav{
+    height:60px;
+  }
 
   .nav-meta{
     display:none;

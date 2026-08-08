@@ -1152,7 +1152,12 @@ body.nav-open {
   font-size: 18px;
   font-weight: 700;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
   margin-left: 16px;
 }
 
@@ -1478,7 +1483,7 @@ body.nav-open {
     font-size: 24px;
   }
   .btn-solid-red, .btn-outline-white {
-    padding: 14px 18px;
+    padding: 14px 24px;
     font-size: 13px;
   }
   .strip-container {
