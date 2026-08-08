@@ -1262,6 +1262,11 @@ footer{
     padding-right:24px;
   }
 
+  .quote-section{
+    padding-top:60px;
+    padding-bottom:60px;
+  }
+
   .hero-left{
     padding-top:80px;
   }
@@ -1365,6 +1370,21 @@ footer{
 
   .nav-meta{
     display:none;
+  }
+
+  .hero-left{
+    padding-top:40px;
+    padding-bottom:40px;
+  }
+
+  .quote-section{
+    padding-top:40px;
+    padding-bottom:40px;
+  }
+
+  .criteria{
+    padding-top:40px;
+    padding-bottom:40px;
   }
 
   .hero-bottom{
