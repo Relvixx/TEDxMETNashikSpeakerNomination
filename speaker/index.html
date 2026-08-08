@@ -78,8 +78,8 @@
 </div>
 
 <!-- HERO -->
-
-<section class="hero" id="about">
+<main>
+<section class="hero" id="about" aria-label="Hero">
 
   <div class="hero-left">
 
@@ -152,7 +152,7 @@
 
 <!-- QUOTE -->
 
-<section class="quote-section">
+<section class="quote-section" aria-label="Quote">
 
   <div class="quote-text reveal">
     &ldquo;The best ideas don&rsquo;t wait for permission.
@@ -167,11 +167,11 @@
 
 <!-- CRITERIA -->
 
-<section class="criteria" id="criteria">
+<section class="criteria" id="criteria" aria-labelledby="criteria-title">
 
   <div class="criteria-header">
 
-    <div class="criteria-title reveal-left">
+    <div class="criteria-title reveal-left" id="criteria-title">
       WHAT WE<br>
       LOOK FOR
     </div>
@@ -231,7 +231,7 @@
 
 <!-- FORM -->
 
-<section class="form-section" id="nominate">
+<section class="form-section" id="nominate" aria-labelledby="form-heading">
 
   <div class="form-left reveal-left">
 
@@ -241,7 +241,7 @@
         Speaker Nominations Open
       </div>
 
-      <div class="form-heading">
+      <div class="form-heading" id="form-heading">
         SPEAKER<br>
         NOMINATION
       </div>
@@ -347,7 +347,7 @@
         <span class="error-msg">Files must be under 10 MB, of a supported type, and no more than 5 total.</span>
       </div>
 
-      <div class="submit-wrap full">
+      <div class="submit-wrap full" aria-live="polite">
 
         <div class="step">
           TEDxMET Nashik 2026
@@ -384,6 +384,8 @@
   </div>
 
 </section>
+
+</main>
 
 <!-- FOOTER -->
 

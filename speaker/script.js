@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="file-icon">📎</span>
         <span class="file-name">${file.name}</span>
         <span class="file-size">${formatBytes(file.size)}</span>
-        <button type="button" class="file-remove" data-index="${index}" title="Remove file">✕</button>
+        <button type="button" class="file-remove" data-index="${index}" aria-label="Remove ${file.name}">✕</button>
       `;
       fileListEl.appendChild(row);
     });

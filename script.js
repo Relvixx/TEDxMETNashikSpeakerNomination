@@ -273,8 +273,18 @@
     if (btn) {
       btn.addEventListener('click', () => {
         const isActive = row.classList.contains('active');
-        faqRows.forEach(r => r.classList.remove('active'));
-        if (!isActive) row.classList.add('active');
+        
+        // Reset all rows
+        faqRows.forEach(r => {
+          r.classList.remove('active');
+          const rowBtn = r.querySelector('.faq-btn');
+          if (rowBtn) rowBtn.setAttribute('aria-expanded', 'false');
+        });
+        
+        if (!isActive) {
+          row.classList.add('active');
+          btn.setAttribute('aria-expanded', 'true');
+        }
       });
     }
   });
@@ -285,6 +295,33 @@
   const drawerLinks = document.querySelectorAll('.drawer-link');
   let savedScrollY = 0;
 
+  let drawerFocusHandler = null;
+
+  function trapDrawerFocus() {
+    const focusableElements = mobileDrawer.querySelectorAll('a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])');
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (!firstElement) return null;
+
+    return function(e) {
+      const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+      if (!isTabPressed) return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+  }
+
   function openDrawer() {
     if (!mobileDrawer || mobileDrawer.classList.contains('open')) return;
     savedScrollY = window.scrollY;
@@ -294,6 +331,17 @@
     mobileDrawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('nav-open');
     document.body.style.top = `-${savedScrollY}px`;
+
+    // Focus trap
+    drawerFocusHandler = trapDrawerFocus();
+    if (drawerFocusHandler) {
+      document.addEventListener('keydown', drawerFocusHandler);
+      // Focus first element
+      setTimeout(() => {
+        const firstFocusable = mobileDrawer.querySelector('a[href], button');
+        if (firstFocusable) firstFocusable.focus();
+      }, 50);
+    }
   }
 
   function closeDrawer() {
@@ -305,6 +353,14 @@
     document.body.classList.remove('nav-open');
     document.body.style.top = '';
     window.scrollTo(0, savedScrollY);
+
+    if (drawerFocusHandler) {
+      document.removeEventListener('keydown', drawerFocusHandler);
+      drawerFocusHandler = null;
+    }
+    
+    // Restore focus to trigger button
+    mobileToggle.focus();
   }
 
   if (mobileToggle && mobileDrawer) {
@@ -319,7 +375,6 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) {
         closeDrawer();
-        mobileToggle.focus();
       }
     });
 
