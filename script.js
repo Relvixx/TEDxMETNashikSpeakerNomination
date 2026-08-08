@@ -269,21 +269,72 @@
     }
   });
 
-  // Mobile Menu Drawer
+  // Mobile Menu Drawer — Phase 2 State Machine
   const mobileToggle = document.getElementById('mobile-toggle');
   const mobileDrawer = document.getElementById('mobile-drawer');
   const drawerLinks = document.querySelectorAll('.drawer-link');
+  let savedScrollY = 0;
+
+  function openDrawer() {
+    if (!mobileDrawer || mobileDrawer.classList.contains('open')) return;
+    savedScrollY = window.scrollY;
+    mobileDrawer.classList.add('open');
+    mobileToggle.classList.add('active');
+    mobileToggle.setAttribute('aria-expanded', 'true');
+    mobileDrawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('nav-open');
+    document.body.style.top = `-${savedScrollY}px`;
+  }
+
+  function closeDrawer() {
+    if (!mobileDrawer || !mobileDrawer.classList.contains('open')) return;
+    mobileDrawer.classList.remove('open');
+    mobileToggle.classList.remove('active');
+    mobileToggle.setAttribute('aria-expanded', 'false');
+    mobileDrawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('nav-open');
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
+  }
+
   if (mobileToggle && mobileDrawer) {
+    mobileToggle.setAttribute('aria-expanded', 'false');
+    mobileToggle.setAttribute('aria-controls', 'mobile-drawer');
+
     mobileToggle.addEventListener('click', () => {
-      const open = mobileDrawer.classList.toggle('open');
-      mobileToggle.classList.toggle('active');
-      document.body.style.overflow = open ? 'hidden' : '';
+      mobileDrawer.classList.contains('open') ? closeDrawer() : openDrawer();
     });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) {
+        closeDrawer();
+        mobileToggle.focus();
+      }
+    });
+
+    // Close on viewport resize past mobile breakpoint
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && mobileDrawer.classList.contains('open')) {
+        closeDrawer();
+      }
+    });
+
+    // Drawer link click — close and smooth-scroll to anchor
     drawerLinks.forEach(link => {
       link.addEventListener('click', () => {
-        mobileDrawer.classList.remove('open');
-        mobileToggle.classList.remove('active');
-        document.body.style.overflow = '';
+        const href = link.getAttribute('href');
+        closeDrawer();
+        if (href && href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
+            setTimeout(() => {
+              const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 70;
+              const top = target.getBoundingClientRect().top + window.scrollY - navH;
+              window.scrollTo({ top, behavior: 'smooth' });
+            }, 100);
+          }
+        }
       });
     });
   }

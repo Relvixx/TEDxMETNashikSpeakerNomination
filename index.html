@@ -66,7 +66,7 @@
 
       <div class="nav-actions">
         <button class="btn-nav-nominate js-book-btn">Book Seats</button>
-        <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+        <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-drawer">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -74,7 +74,7 @@
   </nav>
 
   <!-- Mobile Menu Drawer -->
-  <div class="nav-mobile-drawer" id="mobile-drawer" aria-hidden="true">
+  <div class="nav-mobile-drawer" id="mobile-drawer" aria-hidden="true" role="dialog" aria-label="Navigation Menu">
     <div class="drawer-inner">
       <ul role="list">
         <li><a href="#theme" class="drawer-link">Theme</a></li>
@@ -82,7 +82,7 @@
         <li><a href="#experience" class="drawer-link">Experience</a></li>
         <li><a href="#venue" class="drawer-link">Venue</a></li>
         <li><a href="#partners" class="drawer-link">Partners</a></li>
-        <li><button class="drawer-link drawer-link--cta js-book-btn" style="width:100%; cursor:pointer;">Book Seats</button></li>
+        <li><button class="drawer-link drawer-link--cta js-book-btn">Book Seats</button></li>
       </ul>
     </div>
   </div>

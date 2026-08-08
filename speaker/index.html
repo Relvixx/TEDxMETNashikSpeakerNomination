@@ -45,7 +45,7 @@
 
 <!-- NAV -->
 
-<nav>
+<nav role="navigation" aria-label="Speaker Nomination Navigation">
 
   <div class="nav-left">
     <a href="/" class="ted-logo">TEDx</a>
@@ -60,17 +60,20 @@
     <a href="#about" class="nav-link">About</a>
     <a href="#criteria" class="nav-link">Criteria</a>
     <a href="#nominate" class="nav-btn">Nominate</a>
-    <button class="hamburger-btn" id="hamburger-btn" aria-label="Open menu">☰</button>
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu-overlay">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 
 </nav>
 
 <!-- MOBILE MENU OVERLAY -->
-<div class="mobile-menu-overlay" id="mobile-menu-overlay">
+<div class="mobile-menu-overlay" id="mobile-menu-overlay" aria-hidden="true" role="dialog" aria-label="Navigation Menu">
   <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">✕</button>
   <div class="mobile-menu-links">
     <a href="#about" class="mobile-nav-link">About</a>
     <a href="#criteria" class="mobile-nav-link">Criteria</a>
+    <a href="#nominate" class="mobile-nav-link mobile-nav-link--cta">Nominate</a>
   </div>
 </div>
 
