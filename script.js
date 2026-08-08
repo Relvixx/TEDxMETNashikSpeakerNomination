@@ -16,7 +16,8 @@
     antialias: true,
     powerPreference: 'high-performance'
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const maxPixelRatio = window.innerWidth < 768 ? 1.5 : 2;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
 
   let W = window.innerWidth;
   let H = window.innerHeight;
@@ -169,16 +170,20 @@
 
   /* Scroll Progress */
   let scrollProgress = 0;
+  let maxScroll = document.documentElement.scrollHeight - H;
   const camCoordsEl = document.getElementById('cam-coords');
   const scrollPctEl = document.getElementById('scroll-pct');
 
+  function updateMaxScroll() {
+    maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  }
+  
+  // Cache maxScroll instead of forcing layout on every scroll event
+  window.addEventListener('resize', updateMaxScroll, { passive: true });
+  window.addEventListener('load', updateMaxScroll, { passive: true });
+
   window.addEventListener('scroll', () => {
-    const maxScroll = document.documentElement.scrollHeight - H;
     scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-    if (scrollPctEl) {
-      const pct = Math.min(100, Math.floor(scrollProgress * 100));
-      scrollPctEl.textContent = `SCROLL // ${pct.toString().padStart(3, '0')}%`;
-    }
   }, { passive: true });
 
   /* Render Loop */
@@ -206,6 +211,11 @@
 
     if (camCoordsEl) {
       camCoordsEl.textContent = `CAM // X: ${camera.position.x.toFixed(2)} | Y: ${camera.position.y.toFixed(2)} | Z: ${camera.position.z.toFixed(2)}`;
+    }
+
+    if (scrollPctEl) {
+      const pct = Math.min(100, Math.floor(scrollProgress * 100));
+      scrollPctEl.textContent = `SCROLL // ${pct.toString().padStart(3, '0')}%`;
     }
 
     if (projLine1 && heroTarget) {
